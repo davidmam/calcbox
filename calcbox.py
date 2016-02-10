@@ -5,6 +5,7 @@ Created on Wed Feb 10 08:39:54 2016
 @author: www
 """
 import random, re
+import qrcode
 
 # define molecular weights of common chemicals
 rmm={
@@ -38,9 +39,14 @@ hydrates = {'Na2HPO4': [0,2,7,12],
 uvvisM={'p-Nitrophenol':18200,
        }  
 
-uvvisW = {'DNA': [50,260]
+uvvisW = {'DNA': [50,260],
           'Protein': [1, 280] }
 
+def writeqr(text, fileid, savedir='qrcodes'):
+    qr=QRCode()
+    qr.add_data(text)
+    img=qr.make_image()
+    img.save('/'.join(['.',savedir,fileid+'.png']))
   
 def latexformat(text):
     return re.sub(r'([A-Za-z])(\d+)',r'\1\\textsubscript{\2}', text)
@@ -231,7 +237,7 @@ def q5():
 def q6():
     '''Beer-Lambert Law - Basic by molarity '''
     absorb= float(random.randint(1,1000))/1000
-    compound=random.sample(uvvisM.keys(),10[0]
+    compound=random.sample(uvvisM.keys(),1)[0]
     unitText=['M','mM','uM', 'nM','pM']
     units=0    
     conc=absorb/uvvisM[compound]
@@ -248,7 +254,7 @@ What is the concentration of the test solution?'''%(compound, uvvisM[compound], 
 def q7():
     '''Beer-Lambert Law - Basic by molarity '''
     absorb= float(random.randint(1,1000))/1000
-    compound=random.sample(uvvisM.keys(),10[0]
+    compound=random.sample(uvvisM.keys(),1)[0]
     unitText=['M','mM','uM', 'nM','pM']
     units=0    
     conc=absorb/uvvisM[compound]
