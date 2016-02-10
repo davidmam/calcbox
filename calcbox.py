@@ -5,8 +5,8 @@ Created on Wed Feb 10 08:39:54 2016
 @author: www
 """
 import random, re
-import qrcode
-
+import qrcode,os, os.path
+import errno
 # define molecular weights of common chemicals
 rmm={
 'NaCl':58.44,
@@ -41,9 +41,9 @@ uvvisM={'p-Nitrophenol':18200,
 
 uvvisW = {'DNA': [50,260],
           'Protein': [1, 280] }
-
+concunits=['M','mM','uM','nM','pM','fM']
 def writeqr(text, fileid, savedir='qrcodes'):
-    qr=QRCode()
+    qr=qrcode.QRCode()
     qr.add_data(text)
     img=qr.make_image()
     img.save('/'.join(['.',savedir,fileid+'.png']))
@@ -57,7 +57,7 @@ guides={'q1':
     relative molecular mass (RMM, also referred to as \\emph{gram formula mass} 
     or \\emph{molar mass}) is given by the formula below
     
-    $$ \\textrm{concentration} = \\frac{\\textrm{mass}}{\\textrm{RMM}\\times \\text{volume}} $$
+    $$ \\textrm{concentration} = \\frac{\\textrm{mass}}{\\textrm{RMM}\\times \\textrm{volume}} $$
     
     This can be rearranged for mass to give
     
@@ -69,7 +69,7 @@ guides={'q1':
     relative molecular mass (RMM, also referred to as \\emph{gram formula mass} 
     or \\emph{molar mass}) is given by the formula below
     
-    $$ \\textrm{concentration} = \\frac{\\textrm{mass}}{\\textrm{RMM}\\times \\text{volume}} $$
+    $$ \\textrm{concentration} = \\frac{\\textrm{mass}}{\\textrm{RMM}\\times \\textrm{volume}} $$
     
     This can be rearranged for mass to give
     
@@ -81,7 +81,7 @@ guides={'q1':
     relative molecular mass (RMM, also referred to as \\emph{gram formula mass} 
     or \\emph{molar mass}) is given by the formula below
     
-    $$ \\textrm{concentration} = \\frac{\\textrm{mass}}{\\textrm{RMM}\\times \\text{volume}} $$
+    $$ \\textrm{concentration} = \\frac{\\textrm{mass}}{\\textrm{RMM}\\times \\textrm{volume}} $$
     
     This can be rearranged for mass to give
     
@@ -135,6 +135,53 @@ guides={'q1':
     rearranged for $c$ or $\\epsilon$''',
     }
 
+def readlatexstart(template='latexstart.tex'):
+    return open(template).read()
+
+def writequestions(qfile='questions.tex', count=1):
+    '''This is where we write the questions out to file.'''
+    fh=open(qfile, 'w')
+    index=0
+    try:
+        os.makedirs('qrcodes')
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
+    fh.write(readlatexstart())
+    for i in range(count):
+        for q in [q1(), q2()]:
+            index=index+1
+            qrfn="Q%05d"%index
+            fh.write("\\section{%s}\n"%q['title'])
+            fh.write("%s\n"%q['question'])
+            fh.write("\\vskip 10mm\n")
+            writeqr(q['answers'],qrfn)
+            fh.write("\\includegraphics[width=25mm]{%s}\n"%qrfn)
+        fh.write("\\newpage\n")
+        fh.write(guides['q1']+"\n\\newpage\n")
+        for q in [q4(), q5()]:
+            index=index+1
+            qrfn="Q%05d"%index
+            fh.write("\\section{%s}\n"%q['title'])
+            fh.write("%s\n"%q['question'])
+            fh.write("\\vskip 10mm\n")
+            writeqr(q['answers'],qrfn)
+            fh.write("\\includegraphics[width=25mm]{%s}\n"%qrfn)
+        fh.write("\\newpage\n")
+        fh.write(guides['q4']+"\n\\newpage\n")
+        for q in [q6(), q7()]:
+            index=index+1
+            qrfn="Q%05d"%index
+            fh.write("\\section{%s}\n"%q['title'])
+            fh.write("%s\n"%q['question'])
+            fh.write("\\vskip 10mm\n")
+            writeqr(q['answers'],qrfn)
+            fh.write("\\includegraphics[width=25mm]{%s}\n"%qrfn)
+        fh.write("\\newpage\n")
+        fh.write(guides['q6']+"\n\\newpage\n")
+    fh.write('\\end{document}\n')
+    fh.close()     
+
 def q1():
     '''Prepare a solution of a given concentration 
     and volume with the given compound(s)'''
@@ -162,7 +209,7 @@ def q1():
             conc/=1000
             units='M'
         stuff.append('%s %s %s (RMM: %s Da)'%(conc,units,latexformat(d[0]),d[2]))
-        answers.append('%s: %s'%(d[0],d[1]*d[2]*volume/1000000 ))
+        answers.append('%s: %s g'%(d[0],round(d[1]*d[2]*volume/1000000,2 )))
         
     return {'title':qcat,'question':qtext%(volume,'\\\\\n'.join(stuff)),'answers': '; '.join(answers)}
     
@@ -189,9 +236,9 @@ def q2():
     stuff=[]    
     for d in data:
         component= list(d)[:]
-        component.append(volume*d[1]*d[2]/1000000)
+        component.append(round(volume*d[1]*d[2]/1000000,2))
         stuff.append('%s g %s (RMM: %s Da)'%(component[3],latexformat(component[0]),component[2]))
-        answers.append('%s: %s'%(d[0], d[1]))
+        answers.append('%s: %s mM'%(d[0], d[1]))
 
     return {'title':qcat,'question':qtext%(volume,'\\\\\n'.join(stuff)),'answers': '; '.join(answers)}  
            
@@ -207,19 +254,23 @@ def q3():
     the solution is titrated against a 0.1 M solution of a strong univalent base. %s ml is required for 
     neutralisation. What is the empirical molecular weight of the unknown 
     acid?'''%(mass, volume,titvol)      
-    answer='%s Da'%molwt
+    answer='%s Da'%round(molwt,1)
     return {'title':qcat, 'question':qtext, 'answers':answer}
     
 def q4():
     '''Application of the dilution law'''
     concentration1=random.randint(1,10)*(10**random.randint(1,2))
-    concentration2=random.randint(1,9)*(10**(random.randint(0,1,2)-2))
+    concentration2=random.randint(1,9)*(10**(random.randint(0,2)-2))
     volume2=random.randint(1,20)*5*(10**random.randint(1,2))
-    volume1=concentration2*volume2/concentration1
+    volume1=round(concentration2*volume2/concentration1,1)
+    units=1
+    while concentration2 <1:
+        concentration2 *=1000
+        units +=1
     qcat='A2 Dilutions'
     qtext='''%s ml of a solution with concentration %s mM is diluted to a total 
     volume of %s ml. What is the concentration of the resulting solution?'''%(volume1,concentration1, volume2)
-    answer=concentration2
+    answer="%s %s"%(round(concentration2,2),concunits[units])
     return {'title': qcat, 'question':qtext,'answers':answer}
 
 def q5():
@@ -227,11 +278,15 @@ def q5():
     concentration1=random.randint(1,10)*(10**random.randint(1,2))
     concentration2=random.randint(1,9)*(10**(random.randint(0,2)-2))
     volume2=random.randint(1,20)*5*(10**random.randint(1,2))
-    volume1=concentration2*volume2/concentration1
+    volume1=round(concentration2*volume2/concentration1,1)
+    units=1
+    while concentration2 <1:
+        concentration2 *=1000
+        units +=1
     qcat='A2 Dilutions'
     qtext='''What volume of a solution with concentration %s mM is required to 
-    make %s ml of a solution with a final concentration of %s mM?'''%(concentration1, volume2, concentration2)
-    answer=volume1
+    make %s ml of a solution with a final concentration of %s %s?'''%(concentration1, volume2, round(concentration2,2),concunits[units])
+    answer="%s ml"%volume1
     return {'title': qcat, 'question':qtext,'answers':answer}
     
 def q6():
@@ -248,7 +303,7 @@ def q6():
     qtext='''A sample of %s with extinction coefficient %s $ML^{-1}cm_{-1}$ gives 
     an absorbance reading of %s when read in a cuvette with path length 1cm.
 What is the concentration of the test solution?'''%(compound, uvvisM[compound], absorb)    
-    answer='%s %s'%(conc, units)
+    answer='%s %s'%(round(conc,2), concunits[units])
     return {'title':qcat, 'question':qtext, 'answers':answer}
 
 def q7():
@@ -263,7 +318,7 @@ def q7():
         units+=1
     qcat='A3 Absorbance'
     qtext='''What absorbance reading would a sample of %s with extinction coefficient %s $ML^{-1}cm_{-1}$ 
-    and concentration %s %s when read in a UV-vis spectrometer.'''%(compound, uvvisM[compound], conc, units)    
+    and concentration %s %s give when read in a UV-vis spectrometer.'''%(compound, uvvisM[compound], round(conc,2), concunits[units])    
     answer='%s'%absorb
     return {'title':qcat, 'question':qtext, 'answers':answer}
     
