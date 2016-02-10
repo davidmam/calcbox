@@ -36,31 +36,31 @@ hydrates = {'Na2HPO4': [0,2,7,12],
 }
   
 def latexformat(text):
-    return re.sub(r'([A-Za-z])(\d+)',r'\1\textsubscript{\2}', text)
+    return re.sub(r'([A-Za-z])(\d+)',r'\1\\textsubscript{\2}', text)
 
 guides={'q1':
     ''' The relationship between the concentration (in moles/litre expressed 
-    as $\\text{mol}L^{-1}$), volume ( in litres, $L$), mass (in grams, $g$) and 
-    relative molecular mass (RMM, also referred to as \emph{gram formula mass} 
-    or \emp{molar mass}) is given by the formula below
+    as $\\textrm{mol}L^{-1}$), volume ( in litres, $L$), mass (in grams, $g$) and 
+    relative molecular mass (RMM, also referred to as \\emph{gram formula mass} 
+    or \\emph{molar mass}) is given by the formula below
     
-    $$ \text{concentration} = \frac{\text{mass}}{\text{RMM}\times \text{volume}} $$
+    $$ \\textrm{concentration} = \\frac{\\textrm{mass}}{\\textrm{RMM}\\times \\text{volume}} $$
     
     This can be rearranged for mass to give
     
-    $$ \text{mass} =  \text{concentration} \times \text{volume} \times \text{RMM} $$
+    $$ \\textrm{mass} =  \\textrm{concentration} \\times \\textrm{volume} \\times \\textrm{RMM} $$
     
     ''',
     'q2': ''' The relationship between the concentration (in moles/litre expressed 
-    as $\\text{mol}L^{-1}$), volume ( in litres, $L$), mass (in grams, $g$) and 
-    relative molecular mass (RMM, also referred to as \emph{gram formula mass} 
-    or \emp{molar mass}) is given by the formula below
+    as $\\textrm{mol}L^{-1}$), volume ( in litres, $L$), mass (in grams, $g$) and 
+    relative molecular mass (RMM, also referred to as \\emph{gram formula mass} 
+    or \\emph{molar mass}) is given by the formula below
     
-    $$ \text{concentration} = \frac{\text{mass}}{\text{RMM}\times \text{volume}} $$
+    $$ \\textrm{concentration} = \\frac{\\textrm{mass}}{\\textrm{RMM}\\times \\text{volume}} $$
     
     This can be rearranged for mass to give
     
-    $$ \text{mass} =  \text{concentration} \times \text{volume} \times \text{RMM} $$
+    $$ \\textrm{mass} =  \\textrm{concentration} \\times \\textrm{volume} \\times \\textrm{RMM} $$
     
     ''',}
 
@@ -90,11 +90,32 @@ def q1():
             conc/=1000
             units='M'
         stuff.append('%s %s %s (RMM: %s Da)'%(conc,units,latexformat(d[0]),d[2]))
-    return qtext%(volume,'\n'.join(stuff))
+    return qtext%(volume,'\\\\\n'.join(stuff))
     
 def q2():
     '''What concentration is obtained by dissolving the following compounds in this volume'''
+    #how many compounds shall we make?
+    number=random.randint(1,3)
+    #choose compounds
+    compounds = random.sample(rmm.keys(),number)
+    #set random concentrations
+    concentrations=[random.randint(1,10)*(10**random.randint(0,2)) for x in compounds]      
+    #set a volume
+    volume=random.randint(1,20)*5*(10**random.randint(1,2))
     
+    qtext='''Calculate the concentration of each compound in a 
+    solution of volume %s ml with the following composition:
     
+    %s'''
+    rmms=[rmm[x] for x in compounds]
+    
+    data=zip(compounds,concentrations, rmms)
+    stuff=[]    
+    for d in data:
+        component= list(d)[:]
+        component.append(volume*d[1]*d[2]/1000000)
+        stuff.append('%s g %s (RMM: %s Da)'%(component[3],latexformat(component[0]),component[2]))
+    return qtext%(volume,'\\\\\n'.join(stuff))
+           
     
     
