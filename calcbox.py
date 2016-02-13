@@ -7,6 +7,7 @@ Created on Wed Feb 10 08:39:54 2016
 import random, re
 import qrcode,os, os.path
 import errno
+import math
 # define molecular weights of common chemicals
 rmm={
 'NaCl':58.44,
@@ -23,12 +24,13 @@ rmm={
 'CaCO3': 100.09
 
 }
+AVOGADRO=6.022*10**23
 H2O=18.015
 
 buffers=(('NaH2PO4','Na2HPO4',7.21 ), 
          ('KH2PO4', 'K2HPO4', 7.21),
         ('NaHCO3', 'Na2CO3', 9.9),
-        ('CH3COOH', 'CH3COONa', 4.74)
+        ('CH3COOH', 'CH3COONa', 4.74),
 )
 
 hydrates = {'Na2HPO4': [0,2,7,12],
@@ -37,11 +39,21 @@ hydrates = {'Na2HPO4': [0,2,7,12],
 }
   
 uvvisM={'p-Nitrophenol':18200,
+        'Oxyhaemoglobin':551620,
+        'Haemoglobin':524280,
+        'Cytochrome C (\\emph{Pseudomonas aureginosa})':31180,
+        'Cytochrome C (\\emph{D. Gigas})': 124400,
+        'Cytochrome C (\\emph{E.equus})': 29000,
+        '2-nitro-5-thiobenzoic acid (DTNB)':13600, # Ellmans reagent
        }  
 
 uvvisW = {'DNA': [50,260],
           'Protein': [1, 280] }
+          
 concunits=['M','mM','uM','nM','pM','fM']
+unitlist=['f','p','n','u','m','','k','M']
+    
+
 def writeqr(text, fileid, savedir='qrcodes'):
     qr=qrcode.QRCode()
     qr.add_data(text)
@@ -50,9 +62,15 @@ def writeqr(text, fileid, savedir='qrcodes'):
   
 def latexformat(text):
     return re.sub(r'([A-Za-z])(\d+)',r'\1\\textsubscript{\2}', text)
-
-guides={'q1':
-    ''' The relationship between the concentration (in moles/litre expressed 
+qpp={'A1':2,
+     'A2':2,
+     'A3':2,
+     'A4':3,
+     'A5':2,
+     }
+guides={'A1':
+    ''' \\section*{A1 Concentrations}
+    The relationship between the concentration (in moles/litre expressed 
     as $\\textrm{mol}L^{-1}$), volume ( in litres, $L$), mass (in grams, $g$) and 
     relative molecular mass (RMM, also referred to as \\emph{gram formula mass} 
     or \\emph{molar mass}) is given by the formula below
@@ -64,36 +82,8 @@ guides={'q1':
     $$ \\textrm{mass} =  \\textrm{concentration} \\times \\textrm{volume} \\times \\textrm{RMM} $$
     
     ''',
-    'q2': ''' The relationship between the concentration (in moles/litre expressed 
-    as $\\textrm{mol}L^{-1}$), volume ( in litres, $L$), mass (in grams, $g$) and 
-    relative molecular mass (RMM, also referred to as \\emph{gram formula mass} 
-    or \\emph{molar mass}) is given by the formula below
-    
-    $$ \\textrm{concentration} = \\frac{\\textrm{mass}}{\\textrm{RMM}\\times \\textrm{volume}} $$
-    
-    This can be rearranged for mass to give
-    
-    $$ \\textrm{mass} =  \\textrm{concentration} \\times \\textrm{volume} \\times \\textrm{RMM} $$
-    
-    ''',
-    'q3': ''' The relationship between the concentration (in moles/litre expressed 
-    as $\\textrm{mol}L^{-1}$), volume ( in litres, $L$), mass (in grams, $g$) and 
-    relative molecular mass (RMM, also referred to as \\emph{gram formula mass} 
-    or \\emph{molar mass}) is given by the formula below
-    
-    $$ \\textrm{concentration} = \\frac{\\textrm{mass}}{\\textrm{RMM}\\times \\textrm{volume}} $$
-    
-    This can be rearranged for mass to give
-    
-    $$ \\textrm{mass} =  \\textrm{concentration} \\times \\textrm{volume} \\times \\textrm{RMM} $$
-
-    When performing an acid/base titration, the point of change is when the charges in the base 
-    equal the charges in the acid, ie they are at the same normality. Assume the unknown acid is 
-    univalent unless indicated otherwise to give the relative molecular mass with 
-    respect to charge.    
-    
-    ''',
-    'q4': '''
+    'A2': '''
+    \\section*{A2 Dilutions}
     The equation for dilutions is the molar equivalence
     
     $$ C_1V_1 = C_2V_2 $$
@@ -105,19 +95,8 @@ guides={'q1':
     or
     $$ V_1 = \\frac{C_2V_2}{C_1} $$
     ''',
-    'q5': '''
-    The equation for dilutions is the molar equivalence
-    
-    $$ C_1V_1 = C_2V_2 $$
-    
-    When a fixed volume of a solution is diluted, the total number of moles $C_1V_1$ 
-    remains the same. This can be rearranged for the unknown concentration or volume as follows:
-    
-    $$ C_1 = \\frac{C_2V_2}{V_1} $$
-    or
-    $$ V_1 = \\frac{C_2V_2}{C_1} $$
-    ''',
-    'q6': '''
+    'A3': '''
+    \\section*{A3 Absorbance}
     The relationship between the absorbance and concentration is given by the Beer-Lambert law.
     
     $$ A = \\epsilon.c.l $$
@@ -125,18 +104,102 @@ guides={'q1':
     where $A$ is the concentration coefficient, $\\epsilon$ is the extinction coefficient, 
     $c$ is the concentration and $l$ is the path length. This can be readily 
     rearranged for $c$ or $\\epsilon$''',
-    'q7': '''
-    The relationship between the absorbance and concentration is given by the Beer-Lambert law.
+    'A4':'''    \\section*{A4 Units and Scientific notation}
+    Scientific notation allows use to express easily very large or very small numbers, and to multiply or divide them.
+    We do that by stating the number as a multiple of powers of ten, so we can take the mantissa (the first bit), 
+    and multiply that by the power of ten given by the exponent. e.g for the number 0.000345 this would be
     
-    $$ A = \\epsilon.c.l $$
+    $$ 3.45 \\times 10^{-4} $$
     
-    where $A$ is the concentration coefficient, $\\epsilon$ is the extinction coefficient, 
-    $c$ is the concentration and $l$ is the path length. This can be readily 
-    rearranged for $c$ or $\\epsilon$''',
+    where 3.45 is the mantissa and -4 is the exponent.
+    
+    As can be seen, the exponent is the number of places before (for positive) or after (for negative)
+the decimal point. So 345 would be $3.45 \\times 10^{2}$.    
+    
+    When multiplying and dividing numbers in scientific notation we can add the 
+    exponents when multiplying, or subtract the exponent for the denominator (the number on the bottom)
+    from the exponent for the numerator (the number on the top). Divide the mantissas in the usual way  
+    and make any corrections neccessary.
+
+    $$ 3.45 \\times 10^{-7}\\  \\textrm{multiplied by}\\  2.80 \\times 10^{4} $$
+    Add the exponents
+    $$ 3.45\\  \\textrm{multiplied by}\\ 2.80 \\times 10^{-7+4}\\ ( =10^{-3}) $$
+    Multiply the mantissas
+    $$  3.45 \\times 10^{-7}\\  \\textrm{multiplied by}\\ 2.80 \\times 10^{4} = 9.66 \\times 10^{-3} $$
+
+Dividing is similar, though this time we will need to make a small correction to the exponent
+
+$$ \\frac{6.82 \\times 10^{3}}{8.43 \\times 10^{-5}} $$
+
+Subtract the exponent of the denominator (the bottom, -5 ) from the exponent of the numerator (the top, 3)
+$$ \\frac{6.82}{8.43} \\times 10^{3 - -5} \\textrm{\mbox{\parbox[c]{3in}{(subtracting a negatve number is the same as adding the positive number)}}}\\ = \\frac{6.82}{8.43} \\times 10^{8} $$
+Divide the mantissas, and then add or subtract from the exponent to get 1 digit before the decimal point.
+
+$$ 0.809 \\times 10^{8} = 8.09 \\times 10^{7} $$
+
+\subsection*{Common Units}
+
+It can be inconvenient to use Scientific notation all the time. Common units are multiples of 
+the unit, typically in steps of 1000 ($10^{3}$). A comprehensive list is on the poster 
+of nearly everything, but common ones are milli ($10^{-3}$), micro ($10^{-6}$), 
+nano ($10^{-9}$), kilo ($10^{3}$), Mega ($10^{6}$), Giga ($10^{9}$)
+
+e.g. 1000 mg = 1 g = 1 $\\times 10^6$ ug = 1$\\times 10^{-3}$ kg
+
+    '''  ,
+    'A5':
+        '''
+        \\section*{A5 Moles and Molarity}
+        The \\textsl{mole} is used in chemistry to describe a fixed number of molecules.
+        The weight of molecules varies according to their elemental composition, 
+        so comparing them by weight becomes difficult. Instead we can compare 
+        fixed numbers of molecules. The counting unit for chemistry is the 
+        \\textbf{mole} which corresponds to a count of 
+        $6.022 \\times 10^{23}$, known as \\emph{Avogadro's number} ($N_A$). 
+        Avogadro's number has the units of \\emph{reciprocal mole} ($\\textsl{mol}^{-1}$).
+        
+        The \\emph{relative molecular mass} (\\emph{RMM}, also known as the \\emph{gram formula mass} or \\emph{Molecular Weight})
+        of a compound is the mass in grams of 1 mole of that compound, i.e. $6.022 \\times 10^{23}$ molecules.
+        
+        Concentrations can be expressed as moles per Litre ($\\textsl{mol}L^{-1}$). 
+        The number of molecules in a particular volume can therefore be expressed as:
+        
+        $$\\textrm{molecules} = \\textrm{volume} \\times \\textrm{concentration} \\times N_A $$        
+        
+        To calculate the number of molecules in a given mass, divide by the relative molecular mass to get 
+        the number of moles, then multiply by $N_A$
+        
+        $$ \\textrm{molecules} = \\frac{\\textrm{mass}}{\\textsl{RMM}} \\times N_A $$
+        
+        To express exponents in a computer we typically use the formulation 
+        6.022 $\\times$ 10e23 to refer to $6.022 \\times 10^{-23}$.
+               
+        ''',
+       
     }
+
+def exponent(number):
+    expon= int(math.log10(number))
+    if expon < 0:
+        expon-=1
+    return expon
+    
+def mantissa (number):    
+    return number/10**exponent(number)
+    
 
 def readlatexstart(template='latexstart.tex'):
     return open(template).read()
+    
+def formatquestion(qcat,qtext, atext, qid, height=120):
+    ftext='\\noindent\\fbox{\\begin{minipage}[t][%dmm][t]{\\textwidth}\n'%height
+    ftext+="\\section*{%s}\n"%qcat
+    ftext+="%s\n"%qtext
+    ftext+="\\vskip 10mm\n"
+    writeqr(atext,qid)
+    ftext+="\\includegraphics[width=25mm]{%s}\n"%qid
+    ftext+="\\end{minipage}}\n\n"
+    return ftext
 
 def writequestions(qfile='questions.tex', count=1):
     '''This is where we write the questions out to file.'''
@@ -149,36 +212,41 @@ def writequestions(qfile='questions.tex', count=1):
             raise
     fh.write(readlatexstart())
     for i in range(count):
-        for q in [q1(), q2()]:
-            index=index+1
-            qrfn="Q%05d"%index
-            fh.write("\\section{%s}\n"%q['title'])
-            fh.write("%s\n"%q['question'])
-            fh.write("\\vskip 10mm\n")
-            writeqr(q['answers'],qrfn)
-            fh.write("\\includegraphics[width=25mm]{%s}\n"%qrfn)
-        fh.write("\\newpage\n")
-        fh.write(guides['q1']+"\n\\newpage\n")
-        for q in [q4(), q5()]:
-            index=index+1
-            qrfn="Q%05d"%index
-            fh.write("\\section{%s}\n"%q['title'])
-            fh.write("%s\n"%q['question'])
-            fh.write("\\vskip 10mm\n")
-            writeqr(q['answers'],qrfn)
-            fh.write("\\includegraphics[width=25mm]{%s}\n"%qrfn)
-        fh.write("\\newpage\n")
-        fh.write(guides['q4']+"\n\\newpage\n")
-        for q in [q6(), q7()]:
-            index=index+1
-            qrfn="Q%05d"%index
-            fh.write("\\section{%s}\n"%q['title'])
-            fh.write("%s\n"%q['question'])
-            fh.write("\\vskip 10mm\n")
-            writeqr(q['answers'],qrfn)
-            fh.write("\\includegraphics[width=25mm]{%s}\n"%qrfn)
-        fh.write("\\newpage\n")
-        fh.write(guides['q6']+"\n\\newpage\n")
+        pages= {'A1':[q1(),q2()], 'A2':[q4(),q5()], 'A3':[q6(),q7()],'A4':[q8(),q10(),q9()],'A5':[q11(),q12(),q13(),q14(),q15(),q16(),q17(),q18()]}
+        for page in pages.keys():
+            qcount=0
+            for q in pages[page]:
+                qcount+=1
+                
+                index=index+1
+                qrfn="Q%05d"%index
+                qh=240/qpp[page]
+                #print(qh)
+                fh.write(formatquestion(q['title'],q['question'],q['answers'],qrfn, height=qh))
+                if qcount%qpp[page]==0:
+                    fh.write("\\newpage\n")
+                    fh.write(guides[page]+"\n\\newpage\n")
+            if qcount%qpp[page]!=0:
+                fh.write("\\newpage\n")
+                fh.write(guides[page]+"\n\\newpage\n")
+
+        while 0:
+            for q in [q4(), q5()]:
+                index=index+1
+                qrfn="Q%05d"%index
+                
+            fh.write("\\newpage\n")
+            fh.write(guides['q4']+"\n\\newpage\n")
+            for q in [q6(), q7()]:
+                index=index+1
+                qrfn="Q%05d"%index
+                fh.write("\\section{%s}\n"%q['title'])
+                fh.write("%s\n"%q['question'])
+                fh.write("\\vskip 10mm\n")
+                writeqr(q['answers'],qrfn)
+                fh.write("\\includegraphics[width=25mm]{%s}\n"%qrfn)
+            fh.write("\\newpage\n")
+            fh.write(guides['q6']+"\n\\newpage\n")
     fh.write('\\end{document}\n')
     fh.close()     
 
@@ -209,7 +277,10 @@ def q1():
             conc/=1000
             units='M'
         stuff.append('%s %s %s (RMM: %s Da)'%(conc,units,latexformat(d[0]),d[2]))
-        answers.append('%s: %s g'%(d[0],round(d[1]*d[2]*volume/1000000,2 )))
+        aval=d[1]*d[2]*volume/1000000
+        rdig=2-int(math.log10(aval))
+        
+        answers.append('%s: %s g'%(d[0],round(d[1]*d[2]*volume/1000000,rdig )))
         
     return {'title':qcat,'question':qtext%(volume,'\\\\\n'.join(stuff)),'answers': '; '.join(answers)}
     
@@ -236,7 +307,9 @@ def q2():
     stuff=[]    
     for d in data:
         component= list(d)[:]
-        component.append(round(volume*d[1]*d[2]/1000000,2))
+        aval=d[1]*d[2]*volume/1000000
+        rdig=2-int(math.log10(aval))
+        component.append(round(aval,rdig))
         stuff.append('%s g %s (RMM: %s Da)'%(component[3],latexformat(component[0]),component[2]))
         answers.append('%s: %s mM'%(d[0], d[1]))
 
@@ -262,7 +335,9 @@ def q4():
     concentration1=random.randint(1,10)*(10**random.randint(1,2))
     concentration2=random.randint(1,9)*(10**(random.randint(0,2)-2))
     volume2=random.randint(1,20)*5*(10**random.randint(1,2))
-    volume1=round(concentration2*volume2/concentration1,1)
+    aval=concentration2*volume2/concentration1
+    rdig=2-int(math.log10(aval))
+    volume1=round(aval,rdig)
     units=1
     while concentration2 <1:
         concentration2 *=1000
@@ -278,7 +353,9 @@ def q5():
     concentration1=random.randint(1,10)*(10**random.randint(1,2))
     concentration2=random.randint(1,9)*(10**(random.randint(0,2)-2))
     volume2=random.randint(1,20)*5*(10**random.randint(1,2))
-    volume1=round(concentration2*volume2/concentration1,1)
+    aval=concentration2*volume2/concentration1
+    rdig=2-int(math.log10(aval))
+    volume1=round(aval,rdig)
     units=1
     while concentration2 <1:
         concentration2 *=1000
@@ -322,10 +399,232 @@ def q7():
     answer='%s'%absorb
     return {'title':qcat, 'question':qtext, 'answers':answer}
     
+def q8():
+    '''convert and represent units'''
+    unitlist=['f','p','n','u','m','','k','M']
+    unitoffset=5
+    exponent=random.randint(1,18)-12
+    mantissa=random.random()
+    while mantissa <1:
+        mantissa *=10
+    mantissa=round(mantissa,2)
+    startvalue=mantissa *10**exponent
+    avalue=startvalue    
+    while avalue >1000:
+        avalue /= 1000
+        unitoffset +=1
+    while avalue < 1:
+        avalue *=1000
+        unitoffset -=1    
+    unit=random.sample(['g','L','m','s','M'],1)[0]
     
+    qcat='A4 Units and scientific notation'
+    qtext= 'Express $%.02f \\times 10^{%d}$ %s in common units (milli, micro, kilo etc.)'%(mantissa,exponent,unit)
+    qanswer='%.2f %s%s'%(avalue,unitlist[unitoffset],unit)
+    if avalue > 100:
+        qanswer += ' or %.3f %s%s'%(avalue/1000,unitlist[unitoffset+1],unit)
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
     
+def q9():
+    '''convert and represent units'''
+    unitlist=['f','p','n','u','m','','k','M']
+    unitoffset=5
+    exponent=random.randint(1,18)-12
+    mantissa=random.random()
+    while mantissa <1:
+        mantissa *=10
+    mantissa=round(mantissa,2)
+    startvalue=mantissa *10**exponent
+    qvalue=startvalue    
+    while qvalue >1000:
+        qvalue /= 1000
+        unitoffset +=1
+    while qvalue < 1:
+        qvalue *=1000
+        unitoffset -=1    
+    unit=random.sample(['g','L','m','s','M'],1)[0]
+    multexponent=random.randint(-9,9)
+    while exponent+multexponent > 6 or exponent+multexponent <-12:    
+        multexponent=random.randint(-9,9)
+    multmantissa=random.random()
+    while multmantissa <1:
+        multmantissa *=10
+    multmantissa=round(multmantissa,2)
+    mvalue=multmantissa*10**multexponent
+    avalue=startvalue*mvalue
+    munitoffset=5
+    while avalue >1000:
+        avalue /= 1000
+        munitoffset +=1
+    while avalue < 1:
+        avalue *=1000
+        munitoffset -=1  
+    qcat='A4 Units and scientific notation'
+    qtext= 'Calculate $%.02f\\times 10^{%d}$ times %.02f  %s%s  and give the answer in common units (milli, micro, kilo etc.)'%(multmantissa, multexponent,qvalue,unitlist[unitoffset],unit)
+    qanswer='%.2f %s%s'%(avalue,unitlist[munitoffset],unit)
     
+    if avalue > 100:
+        qanswer += ' or %.3f %s%s'%(avalue/1000,unitlist[munitoffset+1],unit)
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
     
+def q10():
+    '''convert and represent units''' # TODO #
+    unitoffset=5
+    exponent=random.randint(1,18)-12
+    mantissa=random.random()
+    while mantissa <1:
+        mantissa *=10
+    mantissa=round(mantissa,2)
+    startvalue=mantissa *10**exponent
+    qvalue=startvalue    
+    while qvalue >1000:
+        qvalue /= 1000
+        unitoffset +=1
+    while qvalue < 1:
+        qvalue *=1000
+        unitoffset -=1    
+    unit=random.sample(['g','L','m','s','M'],1)[0]
+    multexponent=random.randint(-9,9)
+    while exponent-multexponent > 6 or exponent-multexponent <-12:    
+        multexponent=random.randint(-9,9)
+    multmantissa=random.random()
+    while multmantissa <1:
+        multmantissa *=10
+    multmantissa=round(multmantissa,2)
+    mvalue=multmantissa*10**multexponent
+    avalue=startvalue/mvalue
+    munitoffset=5
+    while avalue >1000:
+        avalue /= 1000
+        munitoffset +=1
+    while avalue < 1:
+        avalue *=1000
+        munitoffset -=1  
+    qcat='A4 Units and scientific notation'
+    qtext= 'Calculate  %.02f  %s%s divided by $%.02f \\times 10^{%d}$   and give the answer in common units (milli, micro, kilo etc.)'%(qvalue,unitlist[unitoffset],unit,multmantissa, multexponent)
+    qanswer='%s %s%s'%(round(avalue,2-int(math.log10(avalue))),unitlist[munitoffset],unit)
+    if avalue > 100:
+        qanswer += ' or %.3f %s%s'%(avalue/1000,unitlist[munitoffset+1],unit)
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+     
+def q11():
+    '''moles and molarity'''
+    conc_unit=random.randint(2,len(concunits)-1)
+    conc_e=-3*conc_unit
+    conc_m=random.randint(1,999)/(10**random.randint(0,2))
+    vol_unit=random.randint(1,5)
+    vol_e=(5-vol_unit)*-3
+    vol_m=random.randint(1,999)/(10**random.randint(0,2))
+    mol=vol_m*conc_m*10**(conc_e+vol_e)
+    molecule=random.sample(rmm.keys(),1)[0]
+    qtext='How many molecules of %s are present in %s %sL of a solution with concentration %s %s? Give your answer in scientific notation'%(
+    molecule,vol_m,unitlist[vol_unit],conc_m, concunits[conc_unit] )
+    qanswer='%s x 10e%s molecules'%(round(mantissa(mol*AVOGADRO),3),exponent(mol*AVOGADRO))
+    qcat='A5 Moles and Molarity'
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+     
+def q12():
+    '''moles and molarity'''
+    conc_unit=random.randint(2,len(concunits)-1)
+    conc_e=-3*conc_unit
+    conc_m=random.randint(1,999)/(10**random.randint(0,2))
+    vol_unit=random.randint(1,5)
+    vol_e=(5-vol_unit)*-3
+    vol_m=random.randint(1,999)/(10**random.randint(0,2))
+    mol_num=AVOGADRO*vol_m*conc_m*10**(conc_e+vol_e)
+    molecule=random.sample(rmm.keys(),1)[0]
+    qtext='if $%s \\times 10^{%s}$ molecules of %s are present in %s %sL of a solution, what is the concentration? Give your answer in common units'%(
+    round(mantissa(mol_num),3),exponent(mol_num), molecule, vol_m,unitlist[vol_unit] )
+    qanswer='%s %s'%(conc_m,concunits[conc_unit])
+    qcat='A5 Moles and Molarity'
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+     
+def q13():
+    '''moles and molarity'''
+    mass_unit=random.randint(1,5)
+    mass_e=(5-mass_unit)*-3
+    mass_m=random.randint(1,999)/(10**random.randint(0,2))
+    molecule=random.sample(rmm.keys(),1)[0]
+    mol_num=AVOGADRO*(mass_m/rmm[molecule])*10**mass_e
+        
+    qtext='How many molecules of %s (RMM: %s) are present in a sample of mass %s %sg? Give your answer in scientific notation'%(
+    molecule, rmm[molecule], mass_m,unitlist[mass_unit] )
+    qanswer='%s x 10e%s molecules'%(round(mantissa(mol_num),3),exponent(mol_num))
+    qcat='A5 Moles and Molarity'
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+
+def q14():
+    '''moles and molarity'''
+    mass_unit=random.randint(1,5)
+    mass_e=(5-mass_unit)*-3
+    mass_m=random.randint(1,999)/(10**random.randint(0,2))
+    molecule=random.sample(rmm.keys(),1)[0]
+    mol_num=AVOGADRO*(mass_m/rmm[molecule])*10**mass_e        
+    qtext='what is the mass of $%s \\times 10^{%s}$ molecules of %s (RMM: %s)? Give your answer in common units'%(
+    round(mantissa(mol_num),3),exponent(mol_num), molecule, rmm[molecule] )
+    qanswer='%s %sg'%(mass_m,unitlist[mass_unit])
+    qcat='A5 Moles and Molarity'
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+     
+def q15():
+    '''moles and molarity'''
+    conc_unit=random.randint(2,len(concunits)-1)
+    conc_e=-3*conc_unit
+    conc_m=random.randint(1,999)/(10**random.randint(0,2))
+    vol_unit=random.randint(1,5)
+    vol_e=(5-vol_unit)*-3
+    vol_m=random.randint(1,999)/(10**random.randint(0,2))
+    mol=vol_m*conc_m*10**(conc_e+vol_e)
+    molecule=random.sample(rmm.keys(),1)[0]
+    qtext='How many moles of %s are present in %s %sL of a solution with concentration %s %s? Give your answer in scientific notation'%(
+    molecule,vol_m,unitlist[vol_unit],conc_m, concunits[conc_unit] )
+    qanswer='%s x 10e%s moles'%(round(mantissa(mol),3),exponent(mol))
+    qcat='A5 Moles and Molarity'
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+     
+def q16():
+    '''moles and molarity'''
+    conc_unit=random.randint(2,len(concunits)-1)
+    conc_e=-3*conc_unit
+    conc_m=random.randint(1,999)/(10**random.randint(0,2))
+    vol_unit=random.randint(1,5)
+    vol_e=(5-vol_unit)*-3
+    vol_m=random.randint(1,999)/(10**random.randint(0,2))
+    mol_num=vol_m*conc_m*10**(conc_e+vol_e)
+    molecule=random.sample(rmm.keys(),1)[0]
+    qtext='if $%s \\times 10^{%s}$ moles of %s are present in %s %sL of a solution, what is the concentration? Give your answer in common units'%(
+    round(mantissa(mol_num),3),exponent(mol_num), molecule, vol_m,unitlist[vol_unit] )
+    qanswer='%s %s'%(conc_m,concunits[conc_unit])
+    qcat='A5 Moles and Molarity'
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+     
+def q17():
+    '''moles and molarity'''
+    mass_unit=random.randint(1,5)
+    mass_e=(5-mass_unit)*-3
+    mass_m=random.randint(1,999)/(10**random.randint(0,2))
+    molecule=random.sample(rmm.keys(),1)[0]
+    mol_num=(mass_m/rmm[molecule])*10**mass_e
+        
+    qtext='How many moles of %s (RMM: %s) are present in a sample of mass %s %sg? Give your answer in scientific notation'%(
+    molecule, rmm[molecule], mass_m,unitlist[mass_unit] )
+    qanswer='%s x 10e%s moles'%(round(mantissa(mol_num),3),exponent(mol_num))
+    qcat='A5 Moles and Molarity'
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+
+def q18():
+    '''moles and molarity'''
+    mass_unit=random.randint(1,5)
+    mass_e=(5-mass_unit)*-3
+    mass_m=random.randint(1,999)/(10**random.randint(0,2))
+    molecule=random.sample(rmm.keys(),1)[0]
+    mol_num=(mass_m/rmm[molecule])*10**mass_e        
+    qtext='what is the mass of $%s \\times 10^{%s}$ moles of %s (RMM: %s)? Give your answer in common units'%(
+    round(mantissa(mol_num),3),exponent(mol_num), molecule, rmm[molecule] )
+    qanswer='%s %sg'%(mass_m,unitlist[mass_unit])
+    qcat='A5 Moles and Molarity'
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+
     
     
     
