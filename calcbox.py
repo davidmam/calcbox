@@ -175,7 +175,44 @@ e.g. 1000 mg = 1 g = 1 $\\times 10^6$ ug = 1$\\times 10^{-3}$ kg
         6.022 $\\times$ 10e23 to refer to $6.022 \\times 10^{-23}$.
                
         ''',
+       'A6':
+       '''\\section*{A6 Scaling and Aliquots}
+       We commonly use two sorts of measures in science - relative and absolute. 
+       Relative measures are proportional, they describe one quantity (e.g. weight, or
+       distance) in terms of another (e.g. volume, or time.) We see this as, for example, concentrations
+       (\\textsl{moles} per \\textsl{Liter}) or speed ( \\textsl{meters} per \\textsl{second}) or cell density
+       (\\textsl{number of cells} per \\textsl{volume} or \\textsl{area}).
        
+       Absolute measures are a fixed quantity, e.g. weight, distance, count, volume.
+       
+       An \\textbf{aliquot} is a portion of a \\textbf{bulk}. It will have the 
+       \\emph{same relative properties} as the bulk but the \\emph{absolute properties scale}
+       in proportion to the relative sizes of the aliquot and bulk.
+       
+       If we represent the absolute quantity as $Q$ and the quantity it is measured 
+       relative to as $V$ (another absolute property), then we can state the relative property as
+       $$\\frac{Q}{V}$$
+       
+       Taking an aliquot of volume $V_a$ from a bulk with volume $V_b$ gives us the equality
+       
+       $$ \\frac{Q_a}{V_a} = \\frac{Q_b}{V_b} $$
+       
+       so the ratio $\\frac{Q_a}{Q_b}$ is the same as the ratio $\\frac{V_a}{V_b}$
+       
+       Example:
+       
+       An aliquot of $10\\mu L$ is taken from a culture of 200ml. When spread on a plate 
+       there are 133 colonies. How many colonies would we get from the full culture?
+       
+       Using
+       $$ \\frac{V_a}{V_b} = \\frac{Q_a}{Q_b} $$
+        where $Q_a$ is 133 cells, $V_a$ is $10\times 10^{-6}L$ and $V_b$ is $0.2 L$, we can 
+        rearrange to find the unknown quantity $Q_b$
+        $$ Q_b = \\frac{Q_a \\times V_b}{V_a} = \\frac{133\ \\textrm{colonies} \\times 0.2L}{10x10^{-6}L} = 2.66 \\times 10^6\ \\textrm{colonies} $$
+       
+       
+       
+       '''
     }
 
 def exponent(number):
@@ -201,7 +238,7 @@ def formatquestion(qcat,qtext, atext, qid, height=120):
     ftext+="\\end{minipage}}\n\n"
     return ftext
 
-def writequestions(qfile='questions.tex', count=1):
+def writequestions(qfile='questions.tex', count=1, pages=None):
     '''This is where we write the questions out to file.'''
     fh=open(qfile, 'w')
     index=0
@@ -211,8 +248,9 @@ def writequestions(qfile='questions.tex', count=1):
         if exception.errno != errno.EEXIST:
             raise
     fh.write(readlatexstart())
-    for i in range(count):
+    if pages==None:
         pages= {'A1':[q1(),q2()], 'A2':[q4(),q5()], 'A3':[q6(),q7()],'A4':[q8(),q10(),q9()],'A5':[q11(),q12(),q13(),q14(),q15(),q16(),q17(),q18()]}
+    for i in range(count):
         for page in pages.keys():
             qcount=0
             for q in pages[page]:
@@ -625,6 +663,27 @@ def q18():
     qcat='A5 Moles and Molarity'
     return {'title':qcat, 'question':qtext,'answers':qanswer}
 
+def q19():
+    '''scaling and aliquots'''
+    vol_b=random.randint(1,20)*50 # mL
+    vol_a=random.randint(1,20)*10 # uL
+    count_a = random.randint(30,300)
+    count_b = vol_b * count_a * 1000 /vol_a
+    qtext='If an aliquot of $%s\\mu L$ taken from a culture of total volume $%s mL$ contains %s cells, how many cells are present in the whole culture?'%(
+    vol_a, vol_b, count_a)
+    qanswer='%s x 10e%s cells'%(round(mantissa(count_b),3), exponent(count_b))
+    qcat='A6 Scaling and Aliquots'
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
     
-    
-    
+def q20():
+    '''scaling and aliquots'''
+    vol_b=random.randint(1,20)*50 # mL
+    vol_a=random.randint(1,20)*10 # uL
+    count_a = random.randint(30,300)
+    count_b = vol_b * count_a * 1000 /vol_a
+    qtext='If an aliquot of $%s\\mu L$ contains %s cells, what volume would contain $%s \\times 10^{%s} cells'%(
+    vol_a, count_a, round(mantissa(count_b),3), exponent(count_b))
+    qanswer='%s mL'%(vol_b)
+    qcat='A6 Scaling and Aliquots'
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+   
