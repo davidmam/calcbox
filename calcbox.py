@@ -65,8 +65,9 @@ def latexformat(text):
 qpp={'A1':2,
      'A2':2,
      'A3':2,
-     'A4':3,
-     'A5':2,
+     'A4':4,
+     'A5':4,
+     'A6':4,
      }
 guides={'A1':
     ''' \\section*{A1 Concentrations}
@@ -172,7 +173,7 @@ e.g. 1000 mg = 1 g = 1 $\\times 10^6$ ug = 1$\\times 10^{-3}$ kg
         $$ \\textrm{molecules} = \\frac{\\textrm{mass}}{\\textsl{RMM}} \\times N_A $$
         
         To express exponents in a computer we typically use the formulation 
-        6.022 $\\times$ 10e23 to refer to $6.022 \\times 10^{-23}$.
+        6.022 $\\times$ 10e23 to refer to $6.022 \\times 10^{23}$.
                
         ''',
        
@@ -212,7 +213,7 @@ def writequestions(qfile='questions.tex', count=1):
             raise
     fh.write(readlatexstart())
     for i in range(count):
-        pages= {'A1':[q1(),q2()], 'A2':[q4(),q5()], 'A3':[q6(),q7()],'A4':[q8(),q10(),q9()],'A5':[q11(),q12(),q13(),q14(),q15(),q16(),q17(),q18()]}
+        pages= {'A1':[q1(),q2()], 'A2':[q4(),q5()], 'A3':[q6(),q7()],'A4':[q8(),q10(),q8a(),q9()],'A5':[q11(),q12(),q13(),q14(),q15(),q16(),q17(),q18()]}
         for page in pages.keys():
             qcount=0
             for q in pages[page]:
@@ -220,7 +221,7 @@ def writequestions(qfile='questions.tex', count=1):
                 
                 index=index+1
                 qrfn="Q%05d"%index
-                qh=240/qpp[page]
+                qh=(240-qpp[page]*3)/qpp[page]
                 #print(qh)
                 fh.write(formatquestion(q['title'],q['question'],q['answers'],qrfn, height=qh))
                 if qcount%qpp[page]==0:
@@ -403,7 +404,7 @@ def q8():
     '''convert and represent units'''
     unitlist=['f','p','n','u','m','','k','M']
     unitoffset=5
-    exponent=random.randint(1,18)-12
+    exponent=random.randint(1,13)-12
     mantissa=random.random()
     while mantissa <1:
         mantissa *=10
@@ -425,11 +426,48 @@ def q8():
         qanswer += ' or %.3f %s%s'%(avalue/1000,unitlist[unitoffset+1],unit)
     return {'title':qcat, 'question':qtext,'answers':qanswer}
     
+def q8a():
+    '''convert and represent units'''
+    unitlist=['f','p','n','u','m','','k','M']
+    unitoffset=5
+    start_e=random.randint(1,13)-7
+    start_m=random.random()
+    while start_m <1:
+        start_m *=10
+    start_m=round(start_m,3)
+    startvalue=start_m *10**start_e
+    avalue=startvalue    
+    while avalue >1000:
+        avalue /= 1000
+        unitoffset +=1
+    while avalue < 1:
+        avalue *=1000
+        unitoffset -=1    
+    unit=random.sample(['g','L','m','s','M','Pa'],1)[0]
+    startunit=0
+    while startunit==0 or startunit+unitoffset >=len(unitlist) or startunit+unitoffset <0:
+        #print(startunit)
+        startunit=random.randint(-3,3)
+    new_e=exponent(avalue)-3*startunit
+    qcat='A4 Units and scientific notation'
+    qtext= 'Express $%.03f \\times 10^{%d}$ %s%s in common units (milli, micro, kilo etc.)'%(start_m,new_e,unitlist[startunit+unitoffset],unit)
+    try:
+        qanswer='%.2f %s%s'%(avalue,unitlist[unitoffset],unit)
+    except:
+        print(unitoffset)
+        raise
+    if avalue > 100:
+        qanswer += ' or %.3f %s%s'%(avalue/1000,unitlist[unitoffset+1],unit)
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+    
+    
+    
+    
 def q9():
     '''convert and represent units'''
     unitlist=['f','p','n','u','m','','k','M']
     unitoffset=5
-    exponent=random.randint(1,18)-12
+    exponent=random.randint(1,13)-7
     mantissa=random.random()
     while mantissa <1:
         mantissa *=10
@@ -470,7 +508,7 @@ def q9():
 def q10():
     '''convert and represent units''' # TODO #
     unitoffset=5
-    exponent=random.randint(1,18)-12
+    exponent=random.randint(1,13)-12
     mantissa=random.random()
     while mantissa <1:
         mantissa *=10
