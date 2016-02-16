@@ -68,6 +68,7 @@ qpp={'A1':2,
      'A4':4,
      'A5':4,
      'A6':4,
+     'A7':4,
      }
 guides={'A1':
     ''' \\section*{A1 Concentrations}
@@ -211,6 +212,24 @@ e.g. 1000 mg = 1 g = 1 $\\times 10^6$ ug = 1$\\times 10^{-3}$ kg
         rearrange to find the unknown quantity $Q_b$
         $$ Q_b = \\frac{Q_a \\times V_b}{V_a} = \\frac{133\ \\textrm{colonies} \\times 0.2L}{10x10^{-6}L} = 2.66 \\times 10^6\ \\textrm{colonies} $$
        
+       ''',
+       'A7': '''\\section*{A7 Percentages and proportional solutions}
+       For some compounds or mixtures it is impossible to determina a molecular weight and hence 
+       impossible to state the concentration of a solution in $\\textsl{moles}L^{-1}$. Instead,
+       for both solutions and mixtures, we     can use percentages expressed either as 
+       proportions of weight (weight for weight, w/w), weight to volume (w/v), or volume as 
+       volume for volume (v/v). Typical examples in the lab are expressed as percentages 
+       where an $n\\%$ w/w mixture will contain $n$ gramms of the compound in a total mass of 100g,
+       an $n\\%$ w/v solution will contain $n$ grams in 100ml, and a $n\\%$ v/v
+       solution will contain $n$ ml of the liquid in a total volume of 100ml.
+       
+       Percentage solutions are easy to calculate and will follow the smae rules for dilution as
+       solutions expressed as a molar concentration.
+       
+       $$\\textrm{concentration (w/v)} = 100 \\times \\frac{\\textrm{mass}}{\\textrm{volume}} $$
+       $$\\textrm{concentration (v/v)} = 100 \\times \\frac{\\textrm{compound volume}}{\\textrm{total volume}} $$
+       
+       These can be readily rearranged for the added mass in a given volume/concentration and so on.
        
        
        '''
@@ -749,3 +768,53 @@ def q22():
     qanswer='%s x10e%sg'%(round(mantissa(mass_b),2), exponent(mass_b)-3)
     qcat='A6 Scaling and Aliquots'
     return {'title':qcat, 'question':qtext,'answers':qanswer}
+    
+def q23():
+    '''percentage solutions'''
+    conc_a=random.randint(1,10)*10**random.randint(-1,0)
+    vol_unit=random.randint(3,5)
+    vol_e=(5-vol_unit)*-3
+    vol_m=random.randint(1,999)/(10**random.randint(0,2))
+    qcat='A7 Percentages and solutions'
+    qtext='What mass of compound is requried to make %s %sL of a %s\\%% w/v solution?'%(
+    vol_m, unitlist[vol_unit],round(conc_a,2))
+    qanswer="%s g"%(conc_a*vol_m*10**vol_e)
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+    
+def q24():
+    '''percentage solutions'''
+    conc_a=random.randint(1,10)*10**random.randint(-1,0)
+    vol_unit=random.randint(3,5)
+    vol_e=(5-vol_unit)*-3
+    vol_m=random.randint(1,999)/(10**random.randint(0,2))
+    qcat='A7 Percentages and solutions'
+    qtext='What is the concentration in \\%% w/v of a %s %sL solution containing $%s \\times 10^{%s}$ g of a compound?'%(
+    vol_m, unitlist[vol_unit],round(mantissa(conc_a*vol_m*10**vol_e), 3-exponent(conc_a*vol_m*10**vol_e)),exponent(conc_a*vol_m*10**vol_e))
+    qanswer="%s \\%% w/v"%(round(conc_a,3))
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+    
+def q25():
+    '''percentage solutions'''
+    conc_a=random.randint(1,10)*10**random.randint(-1,0)
+    vol_unit=random.randint(3,5)
+    vol_e=(5-vol_unit)*-3
+    vol_m=random.randint(1,999)/(10**random.randint(0,2))
+    qcat='A7 Percentages and solutions'
+    qtext='What volume of compound is requried to make %s %sL of a %s\\%% v/v solution?'%(
+    vol_m, unitlist[vol_unit],conc_a)
+    qanswer="%s %sL"%(conc_a*vol_m/100, unitlist[vol_unit])
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+    
+def q26():
+    '''percentage solutions'''
+    conc_a=random.randint(1,10)*10**random.randint(-1,0)
+    vol_unit=random.randint(3,5)
+    vol_e=(5-vol_unit)*-3
+    vol_m=random.randint(1,999)/(10**random.randint(0,2))
+    qcat='A7 Percentages and solutions'
+    qtext='What is the concentration in \\%% v/v of a %s %sL solution containing %s %sL of a compound?'%(
+    vol_m, unitlist[vol_unit],round(conc_a*vol_m,3-exponent(conc_a*vol_m)),unitlist[vol_unit-1])
+    qanswer="%s %% v/v"%(round(conc_a,3))
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+    
+    
