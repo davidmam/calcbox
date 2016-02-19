@@ -21,6 +21,7 @@ rmm={
 'K2HPO4': 174.18,
 'KH2PO4': 136.09,
 'CH3COONa': 82.03,
+'CH3COOH': 60.05,
 'CaCO3': 100.09
 
 }
@@ -69,6 +70,7 @@ qpp={'A1':2,
      'A5':4,
      'A6':4,
      'A7':4,
+     'B1':2,
      }
 guides={'A1':
     ''' \\section*{A1 Concentrations}
@@ -82,6 +84,13 @@ guides={'A1':
     This can be rearranged for mass to give
     
     $$ \\textrm{mass} =  \\textrm{concentration} \\times \\textrm{volume} \\times \\textrm{RMM} $$
+    
+    For solutions expressed in g/L the equivalence is straightforward. Concentration is expressed as a ratio, 
+    so to convert between different common units (femto, pico, nano, micro, milli etc.)
+    you should multiply by 1000 when using a smaller unit, or divide by 1000 when using a larger unit. 
+    The following values are all equivalent 
+    
+    $$ 5 \\frac{\\mu g}{mL} = 0.005 \\frac{\\mu g}{\\mu L} = 5000 \\frac{\\mu g}{L} = 5 \\frac{ng}{\\mu L} $$
     
     ''',
     'A2': '''
@@ -211,6 +220,14 @@ e.g. 1000 mg = 1 g = 1 $\\times 10^6$ ug = 1$\\times 10^{-3}$ kg
         where $Q_a$ is 133 cells, $V_a$ is $10\times 10^{-6}L$ and $V_b$ is $0.2 L$, we can 
         rearrange to find the unknown quantity $Q_b$
         $$ Q_b = \\frac{Q_a \\times V_b}{V_a} = \\frac{133\ \\textrm{colonies} \\times 0.2L}{10x10^{-6}L} = 2.66 \\times 10^6\ \\textrm{colonies} $$
+
+\\subsection*{Describing dilutions}
+There are several ways of describing a diution. Essentially these all mean the same thing.
+
+'A $10^5$ dilution' - the sample has been diluted so that one part of the original solution is in 100000 times the volume.\\
+'A 100000-fold dilution', 'A $100000\\times$ dilution' and 'a 1 in 1000000 dilution' mean exactly the same.
+
+Note that '1 in 10 dilution' and '1:9' are the same, but '1:10 (one part to ten parts)' is an 11-fold dilution.        
        
        ''',
        'A7': '''\\section*{A7 Percentages and proportional solutions}
@@ -231,8 +248,34 @@ e.g. 1000 mg = 1 g = 1 $\\times 10^6$ ug = 1$\\times 10^{-3}$ kg
        
        These can be readily rearranged for the added mass in a given volume/concentration and so on.
        
+       ''',
+       'B1':'''\\section*{B1 Buffers}
+To make a buffer of the correct pH, the appropriate proportions of acid and base must be mixed. 
+Each buffer has a specific affinity for  $H^+$ ions and excess base will tend to 
+associate with free $H^+$, reducing the concentration in the solution and raising the pH. Excess 
+acid will contribute $H^+$ to the solution, lowering the pH. The relationship between the $pH$ of a solution, 
+the association constant for the buffer ($pK_a$) and the relative concentrations 
+of acids \\textsl{[Acid]} and bases \\textsl{[Base]} is given by
+
+$$ pH = pK_a + \\log\\bigg(\\frac{\\textsl{[Base]}}{\\textsl{[Acid]}}\\bigg) $$
+
+This formula gives the pH for a specific ratio of Base to Acid for a buffer with a given pKa. 
+To obtain the proportion of constituents required for a specific pH, the equation needs to be rearranged.
+
+$$ pH - pK_a = \\log\\bigg(\\frac{\\textsl{[Base]}}{\\textsl{[Acid]}}\\bigg) $$
+Take the exponent to get the ratio
+$$ 10^{(pH-pK_a)}= \\frac{\\textsl{[Base]}}{\\textsl{[Acid]}} $$
+and rearrange
+$$ 10^{(pH-pK_a)} \\times \\textsl{[Acid]} = \\textsl{[Base]} $$
+
+The total concentration is \\textsl{[Acid] + [Base]} so
+
+$$ \\textsl{[Acid]} = \\textsl{[total]} \\times \\frac{1}{1+10^{(pH-pK_a)}} $$
+ and for \\textsl{[Base]}
+$$ \\textsl{[Base]} = \\textsl{[total]} \\times \\frac{10^{(pH-pK_a)}}{1+10^{(pH-pK_a)}} $$
        
        '''
+       
     }
 
 def exponent(number):
@@ -252,7 +295,7 @@ def formatquestion(qcat,qtext, atext, qid, height=120):
     ftext='\\noindent\\fbox{\\begin{minipage}[t][%dmm][t]{\\textwidth}\n'%height
     ftext+="\\section*{%s}\n"%qcat
     ftext+="%s\n"%qtext
-    ftext+="\\vskip 10mm\n"
+    ftext+="\\vskip 4mm\n"
     writeqr(atext,qid)
     ftext+="\\includegraphics[width=25mm]{%s}\n"%qid
     ftext+="\\end{minipage}}\n\n"
@@ -269,17 +312,19 @@ def writequestions(qfile='questions.tex', count=1, pages=None):
             raise
     fh.write(readlatexstart())
     if pages==None:
-        pages= {'A1':[q1(),q2()], 'A2':[q4(),q5()], 'A3':[q6(),q7()],'A4':[q8(),q10(),q9()],'A5':[q11(),q12(),q13(),q14(),q15(),q16(),q17(),q18()]}
+        pages= {'A1':[q1,q2,q27,q28], 'A2':[q4,q5], 'A3':[q6,q7],'A4':[q8,q10,q9],'A5':[q11,q12,q13,q14,q15,q16,q17,q18],'A6': [q19,q20,q21,q22],'A7':[q23,q24,q25,q26],'B1':[q101,q102]}
     for i in range(count):
         for page in pages.keys():
             qcount=0
-            for q in pages[page]:
-                qcount+=1
-                
+            for qf in pages[page]:
+                qcount+=1                
                 index=index+1
                 qrfn="Q%05d"%index
                 qh=(240-qpp[page]*3)/qpp[page]
                 #print(qh)
+                print('writing question %s'%qf)
+                print('%s'%qf())
+                q=qf()
                 fh.write(formatquestion(q['title'],q['question'],q['answers'],qrfn, height=qh))
                 if qcount%qpp[page]==0:
                     fh.write("\\newpage\n")
@@ -287,24 +332,6 @@ def writequestions(qfile='questions.tex', count=1, pages=None):
             if qcount%qpp[page]!=0:
                 fh.write("\\newpage\n")
                 fh.write(guides[page]+"\n\\newpage\n")
-
-        while 0:
-            for q in [q4(), q5()]:
-                index=index+1
-                qrfn="Q%05d"%index
-                
-            fh.write("\\newpage\n")
-            fh.write(guides['q4']+"\n\\newpage\n")
-            for q in [q6(), q7()]:
-                index=index+1
-                qrfn="Q%05d"%index
-                fh.write("\\section{%s}\n"%q['title'])
-                fh.write("%s\n"%q['question'])
-                fh.write("\\vskip 10mm\n")
-                writeqr(q['answers'],qrfn)
-                fh.write("\\includegraphics[width=25mm]{%s}\n"%qrfn)
-            fh.write("\\newpage\n")
-            fh.write(guides['q6']+"\n\\newpage\n")
     fh.write('\\end{document}\n')
     fh.close()     
 
@@ -738,7 +765,7 @@ def q20():
     vol_a=random.randint(1,20)*10 # uL
     count_a = random.randint(30,300)
     count_b = vol_b * count_a * 1000 /vol_a
-    qtext='If an aliquot of $%s\\mu L$ contains %s cells, what volume would contain $%s \\times 10^{%s} cells'%(
+    qtext='If an aliquot of $%s\\mu L$ contains %s cells, what volume would contain $%s \\times 10^{%s}$ cells'%(
     vol_a, count_a, round(mantissa(count_b),3), exponent(count_b))
     qanswer='%s mL'%(vol_b)
     qcat='A6 Scaling and Aliquots'
@@ -769,6 +796,8 @@ def q22():
     qcat='A6 Scaling and Aliquots'
     return {'title':qcat, 'question':qtext,'answers':qanswer}
     
+    
+    
 def q23():
     '''percentage solutions'''
     conc_a=random.randint(1,10)*10**random.randint(-1,0)
@@ -776,21 +805,25 @@ def q23():
     vol_e=(5-vol_unit)*-3
     vol_m=random.randint(1,999)/(10**random.randint(0,2))
     qcat='A7 Percentages and solutions'
-    qtext='What mass of compound is requried to make %s %sL of a %s\\%% w/v solution?'%(
+    qtext='What mass of compound is required to make %s %sL of a %s\\%% w/v solution?'%(
     vol_m, unitlist[vol_unit],round(conc_a,2))
-    qanswer="%s g"%(conc_a*vol_m*10**vol_e)
+    qanswer="%s g"%(conc_a*vol_m*10*10**vol_e)
     return {'title':qcat, 'question':qtext,'answers':qanswer}
     
 def q24():
     '''percentage solutions'''
     conc_a=random.randint(1,10)*10**random.randint(-1,0)
     vol_unit=random.randint(3,5)
-    vol_e=(5-vol_unit)*-3
+    vol_e=((5-vol_unit)*-3)
     vol_m=random.randint(1,999)/(10**random.randint(0,2))
+    mass=conc_a*vol_m*10*10**vol_e
     qcat='A7 Percentages and solutions'
-    qtext='What is the concentration in \\%% w/v of a %s %sL solution containing $%s \\times 10^{%s}$ g of a compound?'%(
-    vol_m, unitlist[vol_unit],round(mantissa(conc_a*vol_m*10**vol_e), 3-exponent(conc_a*vol_m*10**vol_e)),exponent(conc_a*vol_m*10**vol_e))
-    qanswer="%s \\%% w/v"%(round(conc_a,3))
+    etext=" \\times 10^{%s}"%exponent(mass)
+    if exponent(mass)==0:
+        etext=''
+    qtext='What is the concentration in \\%% w/v of a %s %sL solution containing $%s %s$ g of a compound?'%(
+    vol_m, unitlist[vol_unit],round(mantissa(mass), 3-exponent(mass)),etext)
+    qanswer="%s %% w/v"%(round(conc_a,3))
     return {'title':qcat, 'question':qtext,'answers':qanswer}
     
 def q25():
@@ -800,7 +833,7 @@ def q25():
     vol_e=(5-vol_unit)*-3
     vol_m=random.randint(1,999)/(10**random.randint(0,2))
     qcat='A7 Percentages and solutions'
-    qtext='What volume of compound is requried to make %s %sL of a %s\\%% v/v solution?'%(
+    qtext='What volume of compound is required to make %s %sL of a %s\\%% v/v solution?'%(
     vol_m, unitlist[vol_unit],conc_a)
     qanswer="%s %sL"%(conc_a*vol_m/100, unitlist[vol_unit])
     return {'title':qcat, 'question':qtext,'answers':qanswer}
@@ -813,8 +846,92 @@ def q26():
     vol_m=random.randint(1,999)/(10**random.randint(0,2))
     qcat='A7 Percentages and solutions'
     qtext='What is the concentration in \\%% v/v of a %s %sL solution containing %s %sL of a compound?'%(
-    vol_m, unitlist[vol_unit],round(conc_a*vol_m,3-exponent(conc_a*vol_m)),unitlist[vol_unit-1])
+    vol_m, unitlist[vol_unit],round(conc_a*vol_m*10,3-exponent(conc_a*vol_m)),unitlist[vol_unit-1])
     qanswer="%s %% v/v"%(round(conc_a,3))
     return {'title':qcat, 'question':qtext,'answers':qanswer}
     
+def q27():
+    '''mass in a mass per vol solution'''
+    mass_m=random.randint(1,999)*10**random.randint(-1,0)
+    mass_unit=random.randint(2,4)
+    conc_m=random.randint(1,999)/10**random.randint(0,2)
+    vol_unit=random.randint(2,4)
+    newvol_unit=mass_unit+1
+    mass_e=(5-mass_unit)*-3
+    vol_e=(5-vol_unit)*-3
+    conc_unit=vol_unit-1
+    conc_e=(4-vol_unit)*-3
+    newvol=mass_m/conc_m 
+    while newvol > 1000:
+        newvol/=1000
+        newvol_unit +=1
+    while newvol < 1:
+        newvol*=1000
+        newvol_unit -=1
+        
+    qcat='A1 Concentrations'
+    qtext='What volume of a %s %sg/%sL solution is required to give %s %sg?'%(
+    conc_m, unitlist[conc_unit],unitlist[vol_unit], round(mass_m,2-exponent(mass_m)), unitlist[mass_unit])
+    qanswer='%s %sL'%(round(newvol,3-exponent(newvol)), unitlist[newvol_unit])
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+
+def q28():
+    '''mass in a mass per vol solution'''
+    mass_m=random.randint(1,999)*10**random.randint(-1,0)
+    mass_unit=random.randint(2,4)
+    conc_m=random.randint(1,999)/10**random.randint(0,2)
+    vol_unit=random.randint(2,4)
+    newvol_unit=mass_unit+1
+    mass_e=(5-mass_unit)*-3
+    vol_e=(5-vol_unit)*-3
+    conc_unit=vol_unit-1
+    conc_e=(4-vol_unit)*-3
+    newvol=mass_m/conc_m 
+    while newvol > 1000:
+        newvol/=1000
+        newvol_unit +=1
+    while newvol < 1:
+        newvol*=1000
+        newvol_unit -=1
+        
+    qcat='A1 Concentrations'
+    qtext='What mass of a compound is found in %s %sL of a %s %sg/%sL solution?'%(
+    round(newvol,3-exponent(newvol)), unitlist[newvol_unit], conc_m, unitlist[conc_unit],unitlist[vol_unit])
+    qanswer='%s %sg'%( round(mass_m,2-exponent(mass_m)), unitlist[mass_unit])
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+
+def q101():
+    '''Buffer composition'''
+    conc_m=random.randint(1,20)*2.5*10**random.randint(0,1) # this will be mM
+    vol_m = random.randint(1,50)*10**random.randint(0,2) #this will be ml
+    pHdiff=random.randint(-20,20)/10.0
+    buffer=random.sample(buffers,1)[0] 
+    targetpH=round(buffer[2]+pHdiff, 1)
+    abratio=10**(targetpH-buffer[2])
+    conc_a=conc_m/(1+abratio)
+    conc_b=conc_m*abratio/(1+abratio)
+    mass_a=vol_m*conc_a*rmm[buffer[0]]/1000000
+    mass_b=vol_m*conc_b*rmm[buffer[1]]/1000000
+    qcat='B1 Buffers'
+    qtext='what mass of %s (RMM: %s) and %s (RMM: %s, $pK_a$ %s ) would be required to make %s mL of a buffer of concentration %s mM and pH %s?'%(
+    buffer[0], rmm[buffer[0]],buffer[1], rmm[buffer[1]],buffer[2], round(vol_m,0), round(conc_m,0), targetpH)
+    qanswer='%s: %s g %s: %s g'%(buffer[0], round(mass_a,2-exponent(mass_a)),buffer[1], round(mass_b,2-exponent(mass_b)) )
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
     
+def q102():
+    '''Buffer composition'''
+    conc_m=random.randint(1,20)*2.5*10**random.randint(0,1) # this will be mM
+    vol_m = random.randint(1,50)*10**random.randint(0,2) #this will be ml
+    pHdiff=random.randint(-20,20)/10.0
+    buffer=random.sample(buffers,1)[0] 
+    targetpH=round(buffer[2]+pHdiff, 1)
+    abratio=10**(targetpH-buffer[2])
+    conc_a=conc_m/(1+abratio)
+    conc_b=conc_m*abratio/(1+abratio)
+    mass_a=vol_m*conc_a*rmm[buffer[0]]/1000000
+    mass_b=vol_m*conc_b*rmm[buffer[1]]/1000000
+    qcat='B1 Buffers'
+    qtext='What would be the concentration and pH of a %s mLsolution containing %s g of %s (RMM: %s) and %s g of %s (RMM: %s, $pK_a$ %s )?'%(
+     round(vol_m,0),round(mass_a,2-exponent(mass_a)), buffer[0], rmm[buffer[0]], round(mass_b,2-exponent(mass_b)),buffer[1], rmm[buffer[1]],buffer[2])
+    qanswer='%s mM pH %s'%(round(conc_m,0), targetpH )
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
