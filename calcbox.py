@@ -71,6 +71,7 @@ qpp={'A1':2,
      'A6':4,
      'A7':4,
      'B1':2,
+     'B2':3,
      }
 guides={'A1':
     ''' \\section*{A1 Concentrations}
@@ -274,7 +275,38 @@ $$ \\textsl{[Acid]} = \\textsl{[total]} \\times \\frac{1}{1+10^{(pH-pK_a)}} $$
  and for \\textsl{[Base]}
 $$ \\textsl{[Base]} = \\textsl{[total]} \\times \\frac{10^{(pH-pK_a)}}{1+10^{(pH-pK_a)}} $$
        
-       '''
+       ''',
+       'B2':'''\\section*{B2 First-order kinetics}
+       First-order kinetics occurs when the reaction rate of a compound is dependent directly 
+       on the concentration of that compound according to the equation:
+       $$ -\\frac{d[A]}{dt} = k[A] $$
+       where $k$ is the rate constant for the reaction. As the units on the left hand side 
+       of the equation are $\\textsl{mol}L^{-1}s^{-1}$ it can be determined that 
+       the units for the rate constant are $s^{-1}$ or \\textsl{per second}.
+       
+       Integrating the rate equation for time, $t$ gives the following form where $[A]_0$ 
+       is the starting concentration and $[A]_t$ is the concntration after time $t$:
+       
+       $$ [A]_t = [A]_0\\exp^{-kt}$$
+       or in it's logarithmic form
+       $$ \\ln([A]_t)=\\ln([A]_0)-kt $$
+
+    We can rearrange this for any of the desired components:
+    $$ \\ln([A]_0) - \\ln([A]_t) = \\ln\\Bigg(\\frac{[A]_0}{[A]_t}\\Bigg) = kt   $$
+    $$ k = \\frac{(\\ln([A]_0) - \\ln([A]_t)) }{t} $$
+    $$ t =  \\frac{(\\ln([A]_0) - \\ln([A]_t)) }{k} $$   
+    
+    \\subsection*{Half life}
+    The half life of a reaction, $t_{\\frac{1}{2}}$ is the time taken for the substrate concentration 
+    to reduce to $1/2$ the starting value.
+    At $t_{\\frac{1}{2}}$, $\\frac{[A]_0}{[A]_t}$ is 2, so the half life $t_{\\frac{1}{2}}$
+    is:
+    
+    $$ t_{\\frac{1}{2}}$ =\\frac{\\ln(2)}{k} $$
+    
+    ''',
+    
+       
        
     }
 
@@ -312,7 +344,10 @@ def writequestions(qfile='questions.tex', count=1, pages=None):
             raise
     fh.write(readlatexstart())
     if pages==None:
-        pages= {'A1':[q1,q2,q27,q28], 'A2':[q4,q5], 'A3':[q6,q7],'A4':[q8,q10,q9],'A5':[q11,q12,q13,q14,q15,q16,q17,q18],'A6': [q19,q20,q21,q22],'A7':[q23,q24,q25,q26],'B1':[q101,q102]}
+        pages= {'A1':[q1,q2,q27,q28], 'A2':[q4,q5], 
+        'A3':[q6,q7],'A4':[q8,q10,q9],'A5':[q11,q12,q13,q14,q15,q16,q17,q18],
+        'A6': [q19,q20,q21,q22],'A7':[q23,q24,q25,q26],'B1':[q101,q102],
+        'B2': [q103,q104,q105,q106],}
     for i in range(count):
         for page in pages.keys():
             qcount=0
@@ -935,3 +970,151 @@ def q102():
      round(vol_m,0),round(mass_a,2-exponent(mass_a)), buffer[0], rmm[buffer[0]], round(mass_b,2-exponent(mass_b)),buffer[1], rmm[buffer[1]],buffer[2])
     qanswer='%s mM pH %s'%(round(conc_m,0), targetpH )
     return {'title':qcat, 'question':qtext,'answers':qanswer}
+
+def q103():
+    ''' first order kinetics'''
+    conc_b=random.randint(1,999)*10**random.randint(-2,0)
+    conc_unit=random.randint(3,5)
+    conc_unit_e=conc_unit
+    time= random.randint(1,9)* 10**random.randint(0,5)
+    change= random.random()
+    conc_e=conc_b*change
+    rate=-math.log(change)/time
+    if exponent(conc_b*change)<0:
+        conc_unit_e+=1
+        conc_e*=1000
+    etime=''
+    if time>200:
+        secs=time%60
+        mins=(time%3600)//60
+        hours=time//3600
+        if hours:
+            etime='%s hours '%hours
+        etime += '%s minutes %s seconds'%(mins,secs)
+    else:
+        etime='%s seconds'%time
+    qcat='B2 First order kinetics'
+    qtext='''At the start of a reaction, the concentration of substrate is %s %sM. 
+    After %s the concentration is %s %sM. What is the rate constant?'''%(
+    round(conc_b, 2-exponent(conc_b)), unitlist[conc_unit], etime, 
+    round(conc_e, 2-exponent(conc_e)), unitlist[conc_unit_e])
+    rate_e=''
+    if exponent(rate):
+        rate_e=' x 10e%s'%exponent(rate)
+    qanswer="%s%s per second"%(round(mantissa(rate),2), rate_e)
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+
+def q104():
+    ''' first order kinetics'''
+    conc_b=random.randint(1,999)*10**random.randint(-2,0)
+    conc_unit=random.randint(3,5)
+    conc_unit_e=conc_unit
+    time= random.randint(1,9)* 10**random.randint(0,5)
+    change= random.random()
+    conc_e=conc_b*change
+    rate=-math.log(change)/time
+    if exponent(conc_b*change)<0:
+        conc_unit_e+=1
+        conc_e*=1000
+    etime=''
+    if time>200:
+        secs=time%60
+        mins=(time%3600)//60
+        hours=time//3600
+        if hours:
+            etime='%s hours '%hours
+        etime += '%s minutes %s seconds'%(mins,secs)
+    else:
+        etime='%s seconds'%time
+    rate_e=''
+    if exponent(rate):
+        rate_e=' \\times 10^{%s}'%exponent(rate)
+    qcat='B2 First order kinetics'
+    qtext='''At the start of a reaction, the concentration of substrate is %s %sM. 
+    If the rate constant is $%s%s s^{-1}$, what will be the concentration after %s?'''%(
+    round(conc_b, 2-exponent(conc_b)), unitlist[conc_unit], round(mantissa(rate),2),rate_e, etime)     
+    qanswer="%s %sM"%(round(conc_e, 2-exponent(conc_e)), unitlist[conc_unit_e])
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+    
+def q105():
+    ''' first order kinetics'''
+    conc_b=random.randint(1,999)*10**random.randint(-2,0)
+    conc_unit=random.randint(3,5)
+    conc_unit_e=conc_unit
+    time= random.randint(1,9)* 10**random.randint(0,5)
+    change= random.random()
+    conc_e=conc_b*change
+    rate=-math.log(change)/time
+    if exponent(conc_b*change)<0:
+        conc_unit_e+=1
+        conc_e*=1000
+    etime=''
+    if time>200:
+        secs=time%60
+        mins=(time%3600)//60
+        hours=time//3600
+        if hours:
+            etime='%s hours '%hours
+        etime += '%s minutes %s seconds'%(mins,secs)
+    else:
+        etime='%s seconds'%time
+    rate_e=''
+    if exponent(rate):
+        rate_e=' \\times 10^{%s}'%exponent(rate)
+    qcat='B2 First order kinetics'
+    qtext='''At the start of a reaction, the concentration of substrate is %s %sM. 
+    If the rate constant is $%s%s s^{-1}$, how long will it take for the concentration to drop to %s %sM?'''%(
+    round(conc_b, 2-exponent(conc_b)), unitlist[conc_unit], round(mantissa(rate),2),rate_e, round(conc_e, 2-exponent(conc_e)), unitlist[conc_unit_e])     
+    qanswer="%s"%(etime)
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+    
+def q106():
+    ''' first order kinetics'''
+    conc_b=random.randint(1,999)*10**random.randint(-2,0)
+    conc_unit=random.randint(3,5)
+    conc_unit_e=conc_unit
+    time= random.randint(1,9)* 10**random.randint(0,5)
+    change= random.random()
+    conc_e=conc_b*change
+    rate=-math.log(change)/time
+    if exponent(conc_b*change)<0:
+        conc_unit_e+=1
+        conc_e*=1000
+    etime=''
+    if time>200:
+        secs=time%60
+        mins=(time%3600)//60
+        hours=time//3600
+        if hours:
+            etime='%s hours '%hours
+        etime += '%s minutes %s seconds'%(mins,secs)
+    else:
+        etime='%s seconds'%time
+    rate_e=''
+    if exponent(rate):
+        rate_e=' \\times 10^{%s}'%exponent(rate)
+    qcat='B2 First order kinetics'
+    qtext='''At the start of a first order reaction, the concentration of substrate is %s %sM. 
+    After %s the concentration is %s %sM. What is the half life of the reaction?'''%(
+    round(conc_b, 2-exponent(conc_b)), unitlist[conc_unit], etime, 
+    round(conc_e, 2-exponent(conc_e)), unitlist[conc_unit_e])
+    halflife=math.log(2)/rate
+    htime=''
+    if halflife>200:
+        halflife=int(halflife)
+        secs=halflife%60
+        mins=(halflife%3600)//60
+        hours=halflife//3600
+        if hours:
+            htime='%s hours '%hours
+        htime += '%s minutes %s seconds'%(mins,secs)
+    else:
+        if halflife>10:
+            htime='%s seconds'%int(halflife)
+        else:
+            htime='%s seconds'%round(halflife,2-exponent(halflife))                
+    qanswer="%s"%htime
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+
+    
+    
