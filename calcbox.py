@@ -53,8 +53,37 @@ uvvisW = {'DNA': [50,260],
           
 concunits=['M','mM','uM','nM','pM','fM']
 unitlist=['f','p','n','u','m','','k','M']
-    
 
+def latexgraph(xbox=5,ybox=5,xlog=False,ylog=True, height=150, width=150):
+    '''draw a block of graph paper'''
+    loggaps=[6.02, 9.54, 12.04, 13.98, 15.56, 16.90, 18.06, 19.08]
+    unitlength=int(min(height/ybox,width/xbox))/100
+    graphtext='''
+    \\setlength{\unitlength}{%scm}
+    \\begin{picture}(%s,%s)
+    \\linethickness{0.5pt}
+    '''%(unitlength,xbox*20, ybox*20)
+    graphtext+="\\color{Gray}\n"
+    if xlog:
+        for k in loggaps:
+            graphtext+="\\multiput(%s,0)(20,0){%s}{\\line(0,1){%s}}\n"%(k,xbox,xbox*20)
+    else:
+         graphtext+="\\color{blue}\n\\multiput(2,0)(2,0){%s}{\\lineline(0,1){%s}}\n\\color{Gray}\n"%(xbox,xbox*20)     
+    if ylog:
+        for k in loggaps:
+            graphtext+="\\multiput(0,%s)(0,20){%s}{\\line(1,0){%s}}\n"%(k,ybox,ybox*20)
+    else:
+         graphtext+="\\color{blue}\n\\multiput(0,2)(0,2){%s}{\\lineline(1,0){%s}}\n\\color{Gray}\n"%(ybox,ybox*20)     
+    graphtext+='''\\color{blue}
+    \\multiput(0,10)(0,20){%s}{\\line(1,0){%s}}
+    \\multiput(10,0)(20,0){%s}{\\line(0,1){%s}}
+    \\linethickness{1pt}
+    \\multiput(0,0)(0,20){%s}{\\line(1,0){%s}}
+    \\multiput(0,0)(20,0){%s}{\\line(0,1){%s}}
+    \\end{picture}
+    '''(ybox,xbox*20,xbox, ybox*20,ybox+1,xbox*20,xbox+1, ybox*20)
+    return graphtext
+    
 def writeqr(text, fileid, savedir='qrcodes'):
     qr=qrcode.QRCode()
     qr.add_data(text)
