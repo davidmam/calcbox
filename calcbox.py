@@ -333,7 +333,7 @@ $$ \\textsl{[Base]} = \\textsl{[total]} \\times \\frac{10^{(pH-pK_a)}}{1+10^{(pH
     At $t_{\\frac{1}{2}}$, $\\frac{[A]_0}{[A]_t}$ is 2, so the half life $t_{\\frac{1}{2}}$
     is:
     
-    $$ t_{\\frac{1}{2}}$ =\\frac{\\ln(2)}{k} $$
+    $$ t_{\\frac{1}{2}} =\\frac{\\ln(2)}{k} $$
     
     ''',
     
@@ -380,6 +380,7 @@ def writequestions(qfile='questions.tex', count=1, pages=None):
         'A6': [q19,q20,q21,q22],'A7':[q23,q24,q25,q26],'B1':[q101,q102],
         'B2': [q103,q104,q105,q106],}
     for i in range(count):
+        print('printing set %s of %s'%(i, count))
         for page in pages.keys():
             qcount=0
             for qf in pages[page]:
@@ -388,8 +389,8 @@ def writequestions(qfile='questions.tex', count=1, pages=None):
                 qrfn="Q%05d"%index
                 qh=(240-qpp[page]*3)/qpp[page]
                 #print(qh)
-                print('writing question %s'%qf)
-                print('%s'%qf())
+                #print('writing question %s'%qf)
+                #print('%s'%qf())
                 q=qf()
                 fh.write(formatquestion(q['title'],q['question'],q['answers'],qrfn, height=qh))
                 if qcount%qpp[page]==0:
