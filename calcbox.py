@@ -935,3 +935,40 @@ def q102():
      round(vol_m,0),round(mass_a,2-exponent(mass_a)), buffer[0], rmm[buffer[0]], round(mass_b,2-exponent(mass_b)),buffer[1], rmm[buffer[1]],buffer[2])
     qanswer='%s mM pH %s'%(round(conc_m,0), targetpH )
     return {'title':qcat, 'question':qtext,'answers':qanswer}
+
+def q103(): #TODO
+    '''Nernst equation'''
+    conc_m=random.randint(1,20)*2.5*10**random.randint(0,1) # this will be mM
+    vol_m = random.randint(1,50)*10**random.randint(0,2) #this will be ml
+    pHdiff=random.randint(-20,20)/10.0
+    buffer=random.sample(buffers,1)[0] 
+    targetpH=round(buffer[2]+pHdiff, 1)
+    abratio=10**(targetpH-buffer[2])
+    conc_a=conc_m/(1+abratio)
+    conc_b=conc_m*abratio/(1+abratio)
+    mass_a=vol_m*conc_a*rmm[buffer[0]]/1000000
+    mass_b=vol_m*conc_b*rmm[buffer[1]]/1000000
+    qcat='B1 Buffers'
+    qtext='what mass of %s (RMM: %s) and %s (RMM: %s, $pK_a$ %s ) would be required to make %s mL of a buffer of concentration %s mM and pH %s?'%(
+    buffer[0], rmm[buffer[0]],buffer[1], rmm[buffer[1]],buffer[2], round(vol_m,0), round(conc_m,0), targetpH)
+    qanswer='%s: %s g %s: %s g'%(buffer[0], round(mass_a,2-exponent(mass_a)),buffer[1], round(mass_b,2-exponent(mass_b)) )
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+    
+def q104():
+    '''Nersnt Equation'''
+    conc_m=random.randint(1,20)*2.5*10**random.randint(0,1) # this will be mM
+    vol_m = random.randint(1,50)*10**random.randint(0,2) #this will be ml
+    pHdiff=random.randint(-20,20)/10.0
+    buffer=random.sample(buffers,1)[0] 
+    targetpH=round(buffer[2]+pHdiff, 1)
+    abratio=10**(targetpH-buffer[2])
+    conc_a=conc_m/(1+abratio)
+    conc_b=conc_m*abratio/(1+abratio)
+    mass_a=vol_m*conc_a*rmm[buffer[0]]/1000000
+    mass_b=vol_m*conc_b*rmm[buffer[1]]/1000000
+    qcat='B1 Buffers'
+    qtext='What would be the concentration and pH of a %s mLsolution containing %s g of %s (RMM: %s) and %s g of %s (RMM: %s, $pK_a$ %s )?'%(
+     round(vol_m,0),round(mass_a,2-exponent(mass_a)), buffer[0], rmm[buffer[0]], round(mass_b,2-exponent(mass_b)),buffer[1], rmm[buffer[1]],buffer[2])
+    qanswer='%s mM pH %s'%(round(conc_m,0), targetpH )
+    return {'title':qcat, 'question':qtext,'answers':qanswer}
+
