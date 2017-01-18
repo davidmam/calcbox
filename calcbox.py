@@ -336,7 +336,27 @@ $$ \\textsl{[Base]} = \\textsl{[total]} \\times \\frac{10^{(pH-pK_a)}}{1+10^{(pH
     $$ t_{\\frac{1}{2}} =\\frac{\\ln(2)}{k} $$
     
     ''',
+    'B3': '''\\section*{B3 Pressure and Poisselles law}
+    The change in pressure of a fluid travelling along a tube can be described 
+with Poisselle's law. 
+
+    $$ Q =  \frac{\pi r^4(P_1 - P_2) }{ 8\eta L } $$
+    where $Q$ is the overall flow (in $\text{cm}^3\text{s}^{-1}$), 
+    $r$ is the radius of the tube, 
+    $\eta$ is the viscosity of the liquid (measured in dyn $\text{cm.s}^{-1}$)
+    and $L$ is the length of the tube in cm.
     
+    For a given viscosity and length of tube, the pressure drop is directly
+    related to the radius of the tube. For many problems that look at a change
+    in radius with relation to pressure,the viscosity and length are constants that
+    can be cancelled.
+    
+    
+    
+    
+    
+    
+    '''
        
        
     }
