@@ -1046,7 +1046,7 @@ def q29():
     while conc < 0.1:
         conc=conc*1000
         units+=1
-    qcat='DNA Absorbance'
+    qcat='A8 DNA Concentration'
     qtext='''A pure sample of DNA gives 
     an absorbance reading of {:0.3f} when read in a cuvette with path length 1cm. 
     A 50$\\mu$g/ml solution of DNA has an absorbance reading of 1.0
@@ -1063,7 +1063,7 @@ def q30():
     bandratio = gellength/(math.log(50000)-math.log(80))
     gelstart=8-gellength
     
-    qcat='DNA Size'
+    qcat='A8 DNA Size'
     qtext='''\\setlength{\\unitlength}{1cm}
     \\begin{tabular}{ll}
     \\begin{picture}(4,8)
@@ -1097,6 +1097,52 @@ def q30():
     \\end{tabular}    
     '''
     return {'title': qcat, 'question':qtext, 'answers': '{} bp'.format(band)}
+
+def q31():
+    '''A8 Gel migration distance '''
+    standards=[100,200,300,400,500,600,700,800,900,1000,1200,1500,2000,3000,4000,5000,6000,8000,10000]
+    heavy=[500,1000,3000]  
+    band=random.randint(160,3500)
+    gellength=random.randint(600,690)/100
+    midpoint = random.randint(max(400, int(band/3)), min(3500,band*3))
+    
+    gelstart=7-gellength
+    
+    qcat='A8 DNA Size'
+    qtext='''\\setlength{\\unitlength}{1cm}
+    \\begin{tabular}{ll}
+    \\begin{picture}(4,8)
+    \\put(0,0){\\line(1,0){4}}
+    \\put(0,0){\\line(0,1){8}}
+    \\put(4,8){\\line(-1,0){4}}
+    \\put(4,8){\\line(0,-1){8}}
+    \\linethickness{0.5pt}
+    \\put(0.7,7){\\line(1,0){1}}
+    \\put(0.7,7){\\line(0,1){0.4}}
+    \\put(1.7,7){\\line(0,1){0.4}}
+    \\put(0.7,7){\\line(0,1){0.4}}
+    \\put(3.3,7){\\line(0,1){0.4}}
+    \\put(2.3,7){\\line(0,1){0.4}}
+    \\put(1.7,7){\\line(0,1){0.4}}
+    \\put(2.3,7){\\line(1,0){1}}
+'''
+    for b in standards:
+        if b in heavy:
+            qtext += '\\linethickness{2.5pt}\n'
+        else:
+            qtext += '\\linethickness{1pt}\n'
+        qtext += '\\put(0.7,{}){{\\line(1,0){{1}}}}\n'.format(gelstart+gellength *b/(b+midpoint))
+    qtext += '\\linethickness{{1.5pt}}\n\\put(2.3,{}){{\\line(1,0){{1}}}}\n'.format(gelstart+gellength*band/(midpoint+band))
+                                                        
+    qtext+= '''\\end{picture}
+     & \parbox[b][8cm][t]{110mm}{
+    What is the molecular weight of the band in the lane on the right? The
+    molecular weight standards have weights 100, 200, 300, 400, 500*, 600, 700, 800, 900, 1000*
+    1200, 1500, 2000, 3000*, 4000, 5000, 6000, 8000, 10000 (extra dense bands marked with *).}
+    \\end{tabular}    
+    '''
+    return {'title': qcat, 'question':qtext, 'answers': '{} bp'.format(band)}
+
 
 
 def q101():
