@@ -1058,7 +1058,7 @@ def q30():
     '''Gel migration distance '''
     standards=[100,200,300,400,500,600,700,800,900,1000,1200,1500,2000,3000,4000,5000,6000,8000,10000]
     heavy=[500,1000,3000]  
-    band=random.randint(160,2000)
+    band=random.randint(160,3500)
     gellength=random.randint(700,790)/100
     bandratio = gellength/(math.log(50000)-math.log(80))
     gelstart=8-gellength
@@ -1090,7 +1090,7 @@ def q30():
     qtext += '\\linethickness{{1.5pt}}\n\\put(2.3,{}){{\\line(1,0){{1}}}}\n'.format(
                                                     (math.log(band)-math.log(80))*bandratio+gelstart)    
     qtext+= '''\\end{picture}
-     & \parbox[b]{150mm}{
+     & \parbox[b][8cm][t]{110mm}{
     What is the molecular weight of the band in the lane on the right? The
     molecular weight standards have weights 100, 200, 300, 400, 500*, 600, 700, 800, 900, 1000*
     1200, 1500, 2000, 3000*, 4000, 5000, 6000, 8000, 10000 (extra dense bands marked with *).}
