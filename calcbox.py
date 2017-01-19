@@ -101,6 +101,7 @@ qpp={'A1':2,
      'A5':4,
      'A6':4,
      'A7':4,
+     'A8':2,
      'B1':2,
      'B2':3,
      }
@@ -281,6 +282,50 @@ Note that '1 in 10 dilution' and '1:9' are the same, but '1:10 (one part to ten 
        These can be readily rearranged for the added mass in a given volume/concentration and so on.
        
        ''',
+       'A8':'''\\section*{A8 DNA}
+DNA concentrations are typically measured in weight per volume. The concentration 
+can be compared to a known standard and determined by ratios.
+
+If DNA with a concentration of 50 $\\mu$g/ml has an absorbance of 1.000 then it is
+straight forward to determine the concentration by multiplying the absorbance read
+by 50 to get the concentration in $\\mu$g/ml
+
+$$\\frac{C_{\\textrm{Unknown}}}{50 \\mu g/ml} = \\frac{A_{\\textrm{measured}}}{1.000} $$
+$$  C_{\\textrm{Unknown}}  = 50 \\mu g/ml \\times   \\frac{A_{\\textrm{measured}}}{1.000} $$
+       
+To calculate the molecular weight of a band on a gel, first measure the migration distance of two 
+standards, one either side of the . 
+The log of the molecular weight is linearly negatively proportional to the distance migrated on the gel, 
+at least to a close enough approximation over the usable portion of the gel.
+
+To calculate the log(molecular weight), interpolate from the standards either side, $S_h$ 
+for the standard with a molecular weight higher than the band, and $S_l$ for the one with a 
+weight lower than the band.
+(Or you can fit a linear model to all the data in R and mutliply the migration distance by the gradient and add the intercept. This is the log(molecular weight))
+
+Calculate the difference in log(molecular weight) between the two standards:
+
+$$ D_{weight} = \\log(S_h) - \\log{S_l}$$
+
+Calculate the difference in migration distance $D$ for the standards (this will be negative)
+
+$$ D_{mig} = D_l - D_h $$
+
+Calculate the difference in migration distance for the band ($D_b$) and the lower standard
+
+$$ D_{diff} = D_l - D_b $$
+
+Now add to $\\log(S_l)$ the proportional difference between the log of the lower 
+and higher molecular weights
+
+$$ \\log(S_b) = \\log(S_l) +\\frac{D_{diff}}{D_{mig}} \\times D_{weight} $$
+
+Raise the appropriate base (10 or $e$ depending on whether you used log to base 10 
+or natural logarithms) to $\\log(S_b)$ to get your molecular weight.
+
+$$ S_b = 10^{\\log(S_b)} $$
+
+       ''',
        'B1':'''\\section*{B1 Buffers}
 To make a buffer of the correct pH, the appropriate proportions of acid and base must be mixed. 
 Each buffer has a specific affinity for  $H^+$ ions and excess base will tend to 
@@ -398,7 +443,7 @@ def writequestions(qfile='questions.tex', count=1, pages=None):
         pages= {'A1':[q1,q2,q27,q28], 'A2':[q4,q5], 
         'A3':[q6,q7],'A4':[q8,q10,q9],'A5':[q11,q12,q13,q14,q15,q16,q17,q18],
         'A6': [q19,q20,q21,q22],'A7':[q23,q24,q25,q26],'B1':[q101,q102],
-        'B2': [q103,q104,q105,q106],}
+        'B2': [q103,q104,q105,q106],'A8': [q29, q30]}
     for i in range(count):
         print('printing set %s of %s'%(i, count))
         for page in pages.keys():
@@ -488,7 +533,7 @@ def q2():
     return {'title':qcat,'question':qtext%(volume,'\\\\\n'.join(stuff)),'answers': '; '.join(answers)}  
            
 def q3():
-    '''calculate the empirical molecular weightfor an unknown compound.'''
+    '''calculate the empirical molecular weight for an unknown compound.'''
     molwt=float(random.randint(1500,3500))/10
     volume=random.randint(1,20)*5*(10**random.randint(1,2))
     concentration=random.randint(1,10)*(10**random.randint(0,2))
@@ -570,7 +615,11 @@ def q7():
     and concentration %s %s give when read in a UV-vis spectrometer.'''%(compound, uvvisM[compound], round(conc,2), concunits[units])    
     answer='%s'%absorb
     return {'title':qcat, 'question':qtext, 'answers':answer}
-    
+ 
+
+
+
+   
 def q8():
     '''convert and represent units'''
     unitlist=['f','p','n','u','m','','k','M']
@@ -986,6 +1035,69 @@ def q28():
     round(newvol,3-exponent(newvol)), unitlist[newvol_unit], conc_m, unitlist[conc_unit],unitlist[vol_unit])
     qanswer='%s %sg'%( round(mass_m,2-exponent(mass_m)), unitlist[mass_unit])
     return {'title':qcat, 'question':qtext,'answers':qanswer}
+
+
+def q29():
+    '''Beer-Lambert Law - Basic by w/v for DNA '''
+    absorb= float(random.randint(1,1500))/1000
+    unitText=['g','mg','ug', 'ng','pg']
+    units=0    
+    conc=absorb*0.00005
+    while conc < 0.1:
+        conc=conc*1000
+        units+=1
+    qcat='DNA Absorbance'
+    qtext='''A pure sample of DNA gives 
+    an absorbance reading of {:0.3f} when read in a cuvette with path length 1cm. 
+    A 50$\\mu$g/ml solution of DNA has an absorbance reading of 1.0
+What is the concentration of the test solution (in g/ml)?'''.format(absorb)    
+    answer='%s %s/ml'%(round(conc,2), unitText[units])
+    return {'title':qcat, 'question':qtext, 'answers':answer}
+    
+def q30():
+    '''Gel migration distance '''
+    standards=[100,200,300,400,500,600,700,800,900,1000,1200,1500,2000,3000,4000,5000,6000,8000,10000]
+    heavy=[500,1000,3000]  
+    band=random.randint(160,2000)
+    gellength=random.randint(700,790)/100
+    bandratio = gellength/(math.log(50000)-math.log(80))
+    gelstart=8-gellength
+    
+    qcat='DNA Size'
+    qtext='''\\setlength{\\unitlength}{1cm}
+    \\begin{tabular}{ll}
+    \\begin{picture}(4,8)
+    \\put(0,0){\\line(1,0){4}}
+    \\put(0,0){\\line(0,1){8}}
+    \\put(4,8){\\line(-1,0){4}}
+    \\put(4,8){\\line(0,-1){8}}
+    \\linethickness{0.5pt}
+    \\put(0.7,7){\\line(1,0){1}}
+    \\put(0.7,7){\\line(0,1){0.4}}
+    \\put(1.7,7){\\line(0,1){0.4}}
+    \\put(0.7,7){\\line(0,1){0.4}}
+    \\put(3.3,7){\\line(0,1){0.4}}
+    \\put(2.3,7){\\line(0,1){0.4}}
+    \\put(1.7,7){\\line(0,1){0.4}}
+    \\put(2.3,7){\\line(1,0){1}}
+'''
+    for b in standards:
+        if b in heavy:
+            qtext += '\\linethickness{2.5pt}\n'
+        else:
+            qtext += '\\linethickness{1pt}\n'
+        qtext += '\\put(0.7,{}){{\\line(1,0){{1}}}}\n'.format((math.log(b)-math.log(80))*bandratio+gelstart)
+    qtext += '\\linethickness{{1.5pt}}\n\\put(2.3,{}){{\\line(1,0){{1}}}}\n'.format(
+                                                    (math.log(band)-math.log(80))*bandratio+gelstart)    
+    qtext+= '''\\end{picture}
+     & \parbox[b]{150mm}{
+    What is the molecular weight of the band in the lane on the right? The
+    molecular weight standards have weights 100, 200, 300, 400, 500*, 600, 700, 800, 900, 1000*
+    1200, 1500, 2000, 3000*, 4000, 5000, 6000, 8000, 10000 (extra dense bands marked with *).}
+    \\end{tabular}    
+    '''
+    return {'title': qcat, 'question':qtext, 'answers': '{} bp'.format(band)}
+
 
 def q101():
     '''Buffer composition'''
