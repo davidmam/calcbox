@@ -1,0 +1,7 @@
+qrcodes
+*.aux
+*.gz
+*.log
+*.stackdump
+*.pdf
+*.png

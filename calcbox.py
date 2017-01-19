@@ -54,7 +54,7 @@ uvvisW = {'DNA': [50,260],
 concunits=['M','mM','uM','nM','pM','fM']
 unitlist=['f','p','n','u','m','','k','M']
 
-def latexgraph(xbox=5,ybox=5,xlog=False,ylog=True, height=180, width=180):
+def latexgraph(xbox=5,ybox=5,xlog=False,ylog=True, height=180, width=180, square=True):
     '''draw a block of graph paper'''
     loggaps=[6.02, 9.54, 12.04, 13.98, 15.56, 16.90, 18.06, 19.08]
     unitlength=int(min(height/ybox,width/xbox))/200
@@ -102,6 +102,7 @@ qpp={'A1':2,
      'A6':4,
      'A7':4,
      'A8':2,
+     'A8a':2,
      'B1':2,
      'B2':3,
      }
@@ -282,6 +283,15 @@ Note that '1 in 10 dilution' and '1:9' are the same, but '1:10 (one part to ten 
        These can be readily rearranged for the added mass in a given volume/concentration and so on.
        
        ''',
+       'A8a':'''\\section*{A8 DNA}
+       The log of the molecular weight or length of a piece of DNA is linearly negatively proportional to the distance migrated on the gel, 
+at least to a close enough approximation over the usable portion of the gel.
+
+Using a log-linear graph paper you can plot the molecular weight or size in base pairs (the latter is probably most useful)
+against the migration distance. Measure off the migration distance for your unknown band and you have the 
+size of your DNA band.
+
+       ''',
        'A8':'''\\section*{A8 DNA}
 DNA concentrations are typically measured in weight per volume. The concentration 
 can be compared to a known standard and determined by ratios.
@@ -293,9 +303,9 @@ by 50 to get the concentration in $\\mu$g/ml
 $$\\frac{C_{\\textrm{Unknown}}}{50 \\mu g/ml} = \\frac{A_{\\textrm{measured}}}{1.000} $$
 $$  C_{\\textrm{Unknown}}  = 50 \\mu g/ml \\times   \\frac{A_{\\textrm{measured}}}{1.000} $$
        
-To calculate the molecular weight of a band on a gel, first measure the migration distance of two 
+To calculate the molecular weight (typically measured in basepairs for DNA) of a band on a gel, first measure the migration distance of two 
 standards, one either side of the . 
-The log of the molecular weight is linearly negatively proportional to the distance migrated on the gel, 
+The log of the molecular weight or length is linearly negatively proportional to the distance migrated on the gel, 
 at least to a close enough approximation over the usable portion of the gel.
 
 To calculate the log(molecular weight), interpolate from the standards either side, $S_h$ 
@@ -443,7 +453,7 @@ def writequestions(qfile='questions.tex', count=1, pages=None):
         pages= {'A1':[q1,q2,q27,q28], 'A2':[q4,q5], 
         'A3':[q6,q7],'A4':[q8,q10,q9],'A5':[q11,q12,q13,q14,q15,q16,q17,q18],
         'A6': [q19,q20,q21,q22],'A7':[q23,q24,q25,q26],'B1':[q101,q102],
-        'B2': [q103,q104,q105,q106],'A8': [q29, q30]}
+        'B2': [q103,q104,q105,q106],'A8': [q29, q31], 'A8a':[q32]}
     for i in range(count):
         print('printing set %s of %s'%(i, count))
         for page in pages.keys():
@@ -1136,13 +1146,63 @@ def q31():
                                                         
     qtext+= '''\\end{picture}
      & \parbox[b][8cm][t]{110mm}{
-    What is the molecular weight of the band in the lane on the right? The
-    molecular weight standards have weights 100, 200, 300, 400, 500*, 600, 700, 800, 900, 1000*
+    What is the length in base pairs of the band in the lane on the right? The
+    molecular weight standards have lengths (in bp) 100, 200, 300, 400, 500*, 600, 700, 800, 900, 1000*
     1200, 1500, 2000, 3000*, 4000, 5000, 6000, 8000, 10000 (extra dense bands marked with *).}
     \\end{tabular}    
     '''
     return {'title': qcat, 'question':qtext, 'answers': '{} bp'.format(band)}
 
+#def latexgraph(xbox=5,ybox=5,xlog=False,ylog=True, height=180, width=180):
+def q32():
+    '''A8 Gel migration distance '''
+    standards=[100,200,300,400,500,600,700,800,900,1000,1200,1500,2000,3000,4000,5000,6000,8000,10000]
+    heavy=[500,1000,3000]  
+    band=random.randint(160,3500)
+    gellength=random.randint(600,690)/100
+    midpoint = random.randint(max(400, int(band/3)), min(3500,band*3))
+    
+    gelstart=7-gellength
+    
+    qcat='A8 DNA Size'
+    
+    qtext='''
+    \\setlength{\\unitlength}{1cm}
+    \\begin{tabular}{ll}
+    \\begin{picture}(4,8)
+    \\put(0,0){\\line(1,0){4}}
+    \\put(0,0){\\line(0,1){8}}
+    \\put(4,8){\\line(-1,0){4}}
+    \\put(4,8){\\line(0,-1){8}}
+    \\linethickness{0.5pt}
+    \\put(0.7,7){\\line(1,0){1}}
+    \\put(0.7,7){\\line(0,1){0.4}}
+    \\put(1.7,7){\\line(0,1){0.4}}
+    \\put(0.7,7){\\line(0,1){0.4}}
+    \\put(3.3,7){\\line(0,1){0.4}}
+    \\put(2.3,7){\\line(0,1){0.4}}
+    \\put(1.7,7){\\line(0,1){0.4}}
+    \\put(2.3,7){\\line(1,0){1}}
+'''
+    for b in standards:
+        if b in heavy:
+            qtext += '\\linethickness{2.5pt}\n'
+        else:
+            qtext += '\\linethickness{1pt}\n'
+        qtext += '\\put(0.7,{}){{\\line(1,0){{1}}}}\n'.format(gelstart+gellength *b/(b+midpoint))
+    qtext += '\\linethickness{{1.5pt}}\n\\put(2.3,{}){{\\line(1,0){{1}}}}\n'.format(gelstart+gellength*band/(midpoint+band))
+                                                        
+    qtext+= '''\\end{picture}
+     & \parbox[b][8cm][t]{110mm}{
+    What is the length in base pairs of the band in the lane on the right? The
+    molecular weight standards have lengths (in bp) 100, 200, 300, 400, 500*, 600, 700, 800, 900, 1000*
+    1200, 1500, 2000, 3000*, 4000, 5000, 6000, 8000, 10000 (extra dense bands marked with *).
+    '''
+    qtext += '\\begin{center}\n' +\
+    latexgraph(xbox=3, ybox=3, xlog=True, ylog=False, height=60, width=160) +\
+    '\\end{center}\n'+'}\n\\end{tabular}\n'    
+
+    return {'title': qcat, 'question':qtext, 'answers': '{} bp'.format(band)}
 
 
 def q101():
