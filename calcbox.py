@@ -8,6 +8,8 @@ import random, re
 import qrcode,os, os.path
 import errno
 import math
+import scipy.stats as stats
+
 # define molecular weights of common chemicals
 rmm={
 'NaCl':58.44,
@@ -103,6 +105,7 @@ qpp={'A1':2,
      'A7':4,
      'A8':2,
      'A8a':2,
+     'A9':2,
      'B1':2,
      'B2':3,
      }
@@ -336,6 +339,56 @@ or natural logarithms) to $\\log(S_b)$ to get your molecular weight.
 $$ S_b = 10^{\\log(S_b)} $$
 
        ''',
+       'A9':'''\\section*{A9 Hardy-Weinberg equilibria}
+The Hardy-Weinberg equilibrium describes the distribution of alleles in a population 
+which is not under selection. If there is a selective pressure due to a particular
+allele combination being advantageous, or disadvantageous, then the population 
+will deviate from the Hardy-Weinberg equilibrium.
+
+The total frequency of all alleles at a locus is 1, so this can be expressed where 
+there are 2 alleles $p$ and $q$ as
+
+$$ f_p + f_q = 1 $$
+
+and for three alleles $p$, $q$, and $r$ as
+
+$$ f_p + f_q + f_r = 1 $$
+
+Alleles are observed in pairs and the distribution is the product of the relevant 
+frequencies.
+
+$$ f_{p/p} = f_p \times f_p $$
+$$ f_{p/q} = f_p \times f_q $$
+$$ f_{q/p} = f_q \times f_p $$
+$$ f_{q/q} = f_q \times f_q $$
+
+As $f_{q/p}$ is indistinguishable from $f_{p/q}$, we can state this as:
+
+$$ f_p^2 + 2f_pf_q +f_q^2 = 1 $$
+
+To establish whether a population follows Hardy-Weinberg, calculate $f_n$ for each combination of alleles.
+
+$$ f_n = \\frac{\\textsl{Homozygotes for n}+0.5 \\times 
+\\textsl{Heterozygotes containing n}}{\\textsl{Population size}} $$
+
+From these frequencies calculate the expected distribution of genotypes and perform a Chi-squared test to 
+see if it is significantly different to the observed distribution.
+
+\\begin{tabular}{|c|c|c|c|}\\hline
+Genotype & $p/p$ & $p/q$ & $q/q$ \\\\\hline
+Observed & 10 & 24 & 26 \\\\
+\\end{tabular}
+$$ f_p = \\frac{10 + 24/2}{10+24+26} = 0.367 $$
+$$ f_q =\\frac{26 +24/2}{10+24+26} = 0.633 $$ 
+\\begin{tabular}{|c|c|c|c|}
+Genotype & $p/p$ & $p/q$ & $q/q$ \\\\\hline
+Observed & 10 & 24 & 26 \\\\\\hline
+Expected & $f_p^2 \\times 60 = 8.08$ & $f_pf_q \\times 60 \\times 2 = 27.88 $ & $f_q^2 \\times 60 = 24.04$\\\\\hline
+\\end{tabular}
+$$\\chi^2 = \\frac{1}{n}\\Sigma\\frac{(\\textsl{Obs}-\\textsl{Exp})^2}{\\textsl{Exp}} = 12.8; P = 0.0023$$
+This shows a significant deviation from Hardy-Weinberg equilibrium
+
+       ''',
        'B1':'''\\section*{B1 Buffers}
 To make a buffer of the correct pH, the appropriate proportions of acid and base must be mixed. 
 Each buffer has a specific affinity for  $H^+$ ions and excess base will tend to 
@@ -395,8 +448,8 @@ $$ \\textsl{[Base]} = \\textsl{[total]} \\times \\frac{10^{(pH-pK_a)}}{1+10^{(pH
     The change in pressure of a fluid travelling along a tube can be described 
 with Poisselle's law. 
 
-    $$ Q =  \frac{\pi r^4(P_1 - P_2) }{ 8\eta L } $$
-    where $Q$ is the overall flow (in $\text{cm}^3\text{s}^{-1}$), 
+    $$ Q =  \\frac{\\pi r^4(P_1 - P_2) }{ 8\\eta L } $$
+    where $Q$ is the overall flow (in $\\text{cm}^3\\text{s}^{-1}$), 
     $r$ is the radius of the tube, 
     $\eta$ is the viscosity of the liquid (measured in dyn $\text{cm.s}^{-1}$)
     and $L$ is the length of the tube in cm.
@@ -1153,11 +1206,16 @@ def q31():
     '''
     return {'title': qcat, 'question':qtext, 'answers': '{} bp'.format(band)}
 
+
 #def latexgraph(xbox=5,ybox=5,xlog=False,ylog=True, height=180, width=180):
 def q32():
     '''A8 Gel migration distance '''
-    standards=[100,200,300,400,500,600,700,800,900,1000,1200,1500,2000,3000,4000,5000,6000,8000,10000]
-    heavy=[500,1000,3000]  
+    standardsets=[[[100,200,300,400,500,600,700,800,900,1000,1200,1500,2000,3000,4000,5000,6000,8000,10000],
+    [500,1000,3000]],
+    [[117,224,702,1264,1371,1929,2323,3675,4324,4822,5687,6369,7242,8454],[] ]]   
+    stset=random.randint(0,len(standardsets))
+    standards=standardsets[stset][0]    
+    heavy=standardsets[stset][1]
     band=random.randint(160,3500)
     gellength=random.randint(600,690)/100
     midpoint = random.randint(max(400, int(band/3)), min(3500,band*3))
@@ -1184,6 +1242,7 @@ def q32():
     \\put(1.7,7){\\line(0,1){0.4}}
     \\put(2.3,7){\\line(1,0){1}}
 '''
+    doheavy = lambda y: str(y)+'*' if y in heavy else str(y)  
     for b in standards:
         if b in heavy:
             qtext += '\\linethickness{2.5pt}\n'
@@ -1191,18 +1250,119 @@ def q32():
             qtext += '\\linethickness{1pt}\n'
         qtext += '\\put(0.7,{}){{\\line(1,0){{1}}}}\n'.format(gelstart+gellength *b/(b+midpoint))
     qtext += '\\linethickness{{1.5pt}}\n\\put(2.3,{}){{\\line(1,0){{1}}}}\n'.format(gelstart+gellength*band/(midpoint+band))
-                                                        
     qtext+= '''\\end{picture}
-     & \parbox[b][8cm][t]{110mm}{
+     & \\parbox[b][8cm][t]{{110mm}}{{
     What is the length in base pairs of the band in the lane on the right? The
-    molecular weight standards have lengths (in bp) 100, 200, 300, 400, 500*, 600, 700, 800, 900, 1000*
-    1200, 1500, 2000, 3000*, 4000, 5000, 6000, 8000, 10000 (extra dense bands marked with *).
-    '''
+    molecular weight standards have lengths (in bp) {}. Some standard bands may be 
+    more intense than others. These are indicated with a *.
+    '''.format(','.join([doheavy(x) for x in standards]))
     qtext += '\\begin{center}\n' +\
     latexgraph(xbox=3, ybox=3, xlog=True, ylog=False, height=60, width=160) +\
     '\\end{center}\n'+'}\n\\end{tabular}\n'    
 
     return {'title': qcat, 'question':qtext, 'answers': '{} bp'.format(band)}
+
+def q33():
+    '''A9 Hardy-Weinberg '''
+    standardsets=[[[100,200,300,400,500,600,700,800,900,1000,1200,1500,2000,3000,4000,5000,6000,8000,10000],
+    [500,1000,3000]],
+    [[117,224,702,1264,1371,1929,2323,3675,4324,4822,5687,6369,7242,8454],[] ]]   
+    stset=random.randint(0,len(standardsets)-1)
+    standards=standardsets[stset][0]    
+    heavy=standardsets[stset][1]
+
+    alleles=random.randint(2,3)
+    freq=[]
+    bands=[]
+    band= 10
+    for p in range(alleles):
+        freq += [p]*random.randint(20,100)
+        band += random.randint(5,10)
+        bands.append(band)
+    alleles = [freq.count(x)/len(freq) for x in range(alleles)]
+    random.shuffle(bands)
+    
+    qcat='A9 Genotyping (Hardy-Weinberg)'
+    # need to establish gel width and band width. 4mm lanes, 1mm gap? -> 36  
+    rows=2
+    rowheight = 40 # height of row in mm
+    lanes = random.randint(20,30)
+    lanewidth = 3
+    lanegap = 1
+    picx = (lanewidth+lanegap)*lanes + lanegap    
+    deviation = random.random()*2
+    random.shuffle(freq)
+    individuals = []
+    while len(individuals)==0:
+        try:
+            while len(individuals)<rows * lanes:
+                ab = random.sample(freq, 2)
+                if sum(ab) == 0:
+                    test = random.random()*2
+                    if deviation >1 and test > deviation:
+                        individuals.append(ab[:])
+                        individuals.append(ab[:])
+                    elif test <deviation and deviation < 1:
+                        ab = random.sample(freq,2)
+                        individuals.append(ab[:])
+                    else:
+                        individuals.append(ab[:])
+                else:
+                    individuals.append(ab[:])
+            random.shuffle(individuals)
+            obs ={}
+            for i in individuals:
+                key = str(sorted(i))
+                obs[key] = obs.get(key,0)+1
+            expected = {}
+            for p in range(len(alleles)):
+                for q in range(len(alleles)):
+                    key=str(sorted([p,q]))
+                    expected[key]=expected.get(key, 0)+alleles[p]*alleles[q]
+            for i in expected.keys():
+                expected[i] *= rows*lanes
+            f_obs = [obs[x] for x in sorted(obs.keys())]  
+            f_exp = [expected[x] for x in sorted(expected.keys())]  
+              
+            results=stats.chisquare(f_obs, f_exp)
+        except:
+            individuals=[]
+            
+    qtext='''
+    \\setlength{{\\unitlength}}{{1mm}}
+    \\begin{{picture}}({width},{height})
+    \\put(0,0){{\\line(1,0){{ {width} }}}}
+    \\put(0,0){{\\line(0,1){{ {height} }}}}
+    \\put({width},{height}){{\\line(-1,0){{ {width} }}}}
+    \\put({width},{height}){{\\line(0,-1){{ {height} }}}}
+    '''.format(width=picx, height=rowheight*rows)
+    for r in range(rows):    
+        for l in range(lanes):
+            qtext += '''
+            \\linethickness{{0.5pt}}
+            \\put({lanestartx},{lanestarty}){{\\line(1,0){{ {lanewidth} }}}}
+            \\put({lanestartx},{lanestarty}){{\\line(0,1){{2}}}}
+            \\put({lanesendx},{lanestarty}){{\\line(0,1){{2}}}}
+            \\linethickness{{1pt}}
+        '''.format(lanestartx=(lanegap+lanewidth)*l+lanegap, 
+                   lanestarty=rowheight*r+rowheight-5,
+                   lanewidth=lanewidth,
+                   lanesendx=(lanegap+lanewidth)*(l+1))
+            
+            ab = individuals[r*lanes+l]
+            for a in ab:
+                qtext += '''
+            \\put({lanestartx},{lanestarty}){{\\line(1,0){{ {lanewidth} }}}}
+        '''.format(lanestartx=(lanegap+lanewidth)*l+lanegap, 
+                   lanewidth=lanewidth,
+                   lanestarty=rowheight-bands[a]+r*rowheight)
+                
+    doheavy = lambda y: str(y)+'*' if y in heavy else str(y)    
+    qtext+= '''\\end{picture}
+      \parbox[b][8cm][t]{40mm}{Calculate the deviation of the population observed from Hardy-Weinberg equilibrium
+    }\n
+    '''
+    return {'title': qcat, 'question':qtext, 'answers': 'chisquare {:.02f}, P = {:.04f}'.format(results[0], results[1])}
 
 
 def q101():
