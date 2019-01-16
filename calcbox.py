@@ -376,11 +376,11 @@ see if it is significantly different to the observed distribution.
 
 \\begin{tabular}{|c|c|c|c|}\\hline
 Genotype & $p/p$ & $p/q$ & $q/q$ \\\\\hline
-Observed & 10 & 24 & 26 \\\\
+Observed & 10 & 24 & 26 \\\\\\hline
 \\end{tabular}
 $$ f_p = \\frac{10 + 24/2}{10+24+26} = 0.367 $$
 $$ f_q =\\frac{26 +24/2}{10+24+26} = 0.633 $$ 
-\\begin{tabular}{|c|c|c|c|}
+\\begin{tabular}{|c|c|c|c|}\\hline
 Genotype & $p/p$ & $p/q$ & $q/q$ \\\\\hline
 Observed & 10 & 24 & 26 \\\\\\hline
 Expected & $f_p^2 \\times 60 = 8.08$ & $f_pf_q \\times 60 \\times 2 = 27.88 $ & $f_q^2 \\times 60 = 24.04$\\\\\hline
@@ -1213,7 +1213,7 @@ def q32():
     standardsets=[[[100,200,300,400,500,600,700,800,900,1000,1200,1500,2000,3000,4000,5000,6000,8000,10000],
     [500,1000,3000]],
     [[117,224,702,1264,1371,1929,2323,3675,4324,4822,5687,6369,7242,8454],[] ]]   
-    stset=random.randint(0,len(standardsets))
+    stset=random.randint(0,len(standardsets)-1)
     standards=standardsets[stset][0]    
     heavy=standardsets[stset][1]
     band=random.randint(160,3500)
@@ -1250,12 +1250,12 @@ def q32():
             qtext += '\\linethickness{1pt}\n'
         qtext += '\\put(0.7,{}){{\\line(1,0){{1}}}}\n'.format(gelstart+gellength *b/(b+midpoint))
     qtext += '\\linethickness{{1.5pt}}\n\\put(2.3,{}){{\\line(1,0){{1}}}}\n'.format(gelstart+gellength*band/(midpoint+band))
-    qtext+= '''\\end{picture}
+    qtext+= '''\\end{{picture}}
      & \\parbox[b][8cm][t]{{110mm}}{{
     What is the length in base pairs of the band in the lane on the right? The
     molecular weight standards have lengths (in bp) {}. Some standard bands may be 
     more intense than others. These are indicated with a *.
-    '''.format(','.join([doheavy(x) for x in standards]))
+    '''.format(', '.join([doheavy(x) for x in standards]))
     qtext += '\\begin{center}\n' +\
     latexgraph(xbox=3, ybox=3, xlog=True, ylog=False, height=60, width=160) +\
     '\\end{center}\n'+'}\n\\end{tabular}\n'    
