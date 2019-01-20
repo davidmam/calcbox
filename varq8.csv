@@ -1,0 +1,200 @@
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 2
+    &gt; b = '5.0'
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 1
+    &gt; b = '5.0'
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '4.0'
+    &gt; b = 3
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '3.0'
+    &gt; b = 1.0
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 0
+    &gt; b = '2.0'
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 0.0
+    &gt; b = '2.0'
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '5.0'
+    &gt; b = 8
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 3
+    &gt; b = 6
+    &gt; c = a + b
+    </code>]]>",int,1,Correct,An error occurs,0,Wrong,str,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 1
+    &gt; b = 1
+    &gt; c = a + b
+    </code>]]>",int,1,Correct,An error occurs,0,Wrong,str,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 2
+    &gt; b = 3.0
+    &gt; c = a + b
+    </code>]]>",float,1,Correct,An error occurs,0,Wrong,str,0,Wrong,int,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 4.0
+    &gt; b = 4.0
+    &gt; c = a + b
+    </code>]]>",float,1,Correct,An error occurs,0,Wrong,str,0,Wrong,int,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 2
+    &gt; b = 4.0
+    &gt; c = a + b
+    </code>]]>",float,1,Correct,An error occurs,0,Wrong,str,0,Wrong,int,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 3.0
+    &gt; b = '3.0'
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '9.0'
+    &gt; b = 1.0
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 1
+    &gt; b = 1.0
+    &gt; c = a + b
+    </code>]]>",float,1,Correct,An error occurs,0,Wrong,str,0,Wrong,int,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '3.0'
+    &gt; b = '2.0'
+    &gt; c = a + b
+    </code>]]>",str,1,Correct,An error occurs,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 1
+    &gt; b = 4
+    &gt; c = a + b
+    </code>]]>",int,1,Correct,An error occurs,0,Wrong,str,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 2
+    &gt; b = '1.0'
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 6.0
+    &gt; b = '8.0'
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '1.0'
+    &gt; b = 7.0
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '4.0'
+    &gt; b = 0
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '2.0'
+    &gt; b = '6.0'
+    &gt; c = a + b
+    </code>]]>",str,1,Correct,An error occurs,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 0.0
+    &gt; b = '1.0'
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '0.0'
+    &gt; b = 1
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 1.0
+    &gt; b = 2.0
+    &gt; c = a + b
+    </code>]]>",float,1,Correct,An error occurs,0,Wrong,str,0,Wrong,int,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '1.0'
+    &gt; b = 3.0
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '7.0'
+    &gt; b = 2.0
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 1.0
+    &gt; b = '4.0'
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 2
+    &gt; b = 0
+    &gt; c = a + b
+    </code>]]>",int,1,Correct,An error occurs,0,Wrong,str,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '2.0'
+    &gt; b = 1.0
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 8
+    &gt; b = 7.0
+    &gt; c = a + b
+    </code>]]>",float,1,Correct,An error occurs,0,Wrong,str,0,Wrong,int,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '9.0'
+    &gt; b = 5.0
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '2.0'
+    &gt; b = '6.0'
+    &gt; c = a + b
+    </code>]]>",str,1,Correct,An error occurs,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '2.0'
+    &gt; b = 7.0
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 0
+    &gt; b = '6.0'
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 1.0
+    &gt; b = '5.0'
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 1.0
+    &gt; b = 3
+    &gt; c = a + b
+    </code>]]>",float,1,Correct,An error occurs,0,Wrong,str,0,Wrong,int,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 1.0
+    &gt; b = 3.0
+    &gt; c = a + b
+    </code>]]>",float,1,Correct,An error occurs,0,Wrong,str,0,Wrong,int,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = '5.0'
+    &gt; b = 0.0
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong
+MC,"<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    <code>&gt; a = 4
+    &gt; b = '4.0'
+    &gt; c = a + b
+    </code>]]>",An error occurs,1,Correct,str,0,Wrong,int,0,Wrong,float,0,Wrong

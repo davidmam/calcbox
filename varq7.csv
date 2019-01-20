@@ -1,0 +1,120 @@
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",str,1,Correct,int,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",str,1,Correct,int,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",str,1,Correct,int,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",str,1,Correct,int,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",str,1,Correct,int,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",str,1,Correct,int,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",str,1,Correct,int,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",str,1,Correct,int,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",str,1,Correct,int,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",int,1,Correct,str,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",str,1,Correct,int,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",str,1,Correct,int,0,Wrong,float,0,Wrong,Something else,0,Wrong
+MC,"<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    <code>&gt; var
+    </code>]]>",float,1,Correct,str,0,Wrong,int,0,Wrong,Something else,0,Wrong

@@ -23,7 +23,7 @@ def arrayq1(qid):
     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
     arr = get_random_array()
     index = random.randint(0,len(arr)-1) 
-    text = """Given the array arr = {}, give the code which will retrieve the element with value {}"""
+    text = """Given the list arr = {}, give the code which will retrieve the element with value {}"""
     question['prompt'] = text.format(str(arr), arr[index])
     question['correct'].append("arr[{}]".format(index))
     question['incorrect'].append( "arr({})".format(index))
@@ -35,8 +35,8 @@ def arrayq1(qid):
 def arrayq2(qid):
     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
     arr = get_random_array()
-    index = random.randint(1,len(arr)-1) 
-    text = """Given the array arr = {}, give the value which will be returned with the code {}"""
+    index = random.randint(1,len(arr)-2) 
+    text = """Given the list arr = {}, give the value which will be returned with the code {}"""
     question['prompt'] = text.format(str(arr), "arr[{}]".format(index))
     question['correct'].append(arr[index])
     question['incorrect'].append( arr[index+1])
@@ -47,9 +47,9 @@ def arrayq2(qid):
 def arrayq3(qid):    
     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
     arr = get_random_array()
-    index = random.randint(1,len(arr)-1) 
+    index = random.randint(1,len(arr)-2) 
     incorrect = ("arr({})", "arr{{{}}}")
-    text = """Given the array arr = {}, give the value which will be returned with the code {}"""
+    text = """Given the list arr = {}, give the value which will be returned with the code {}"""
     question['prompt'] = text.format(str(arr), random.choice(incorrect).format(index))
     question['correct'].append("An error occurs")
     question['incorrect'].append(arr[index+1])
@@ -60,10 +60,10 @@ def arrayq3(qid):
     
 def arrayq4(qid):
     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
-    arr = get_random_array()
-    startindex = random.randint(1,len(arr)-int(len(arr)/3))
-    endindex = random.randint(startindex+1, len(arr)-1)
-    text = """Given the array arr = {}, give the values which will be returned with the code {}"""
+    arr = get_random_array(6,11)
+    startindex = random.randint(1,int(len(arr)/3))
+    endindex = random.randint(startindex+1, len(arr)-2)
+    text = """Given the list arr = {}, give the values which will be returned with the code {}"""
     question['prompt'] = text.format(str(arr), "arr[{}:{}]".format(startindex, endindex))
     question['correct'].append(arr[startindex:endindex])
     question['incorrect'].append(arr[startindex:endindex+1])
@@ -74,9 +74,9 @@ def arrayq4(qid):
 def arrayq5(qid):
     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
     arr = get_random_array()
-    startindex = random.randint(1,len(arr)-int(len(arr)/3))
-    endindex = random.randint(startindex+1, len(arr)-1)
-    text = """Given the array arr = {}, give the code which will return the values {}"""
+    startindex = random.randint(1,int(len(arr)/3))
+    endindex = random.randint(startindex+1, len(arr)-2)
+    text = """Given the list arr = {}, give the code which will return the values {}"""
     question['prompt'] = text.format(str(arr), arr[startindex:endindex])
     question['correct'].append("arr[{}:{}]".format(startindex,endindex))
     question['incorrect'].append("arr[{}:{}]".format(startindex,endindex-1))
@@ -87,9 +87,9 @@ def arrayq5(qid):
 def arrayq6(qid):
     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
     arr = get_random_array()
-    startindex = random.randint(1,len(arr)-int(len(arr)/3))
-    endindex = random.randint(startindex+1, len(arr)-1)
-    text = """Given the array arr = {}, give the code which will return the values {}"""
+    startindex = random.randint(1,int(len(arr)/3))
+    endindex = random.randint(startindex+1, len(arr)-2)
+    text = """Given the list arr = {}, give the code which will return the values {}"""
     question['prompt'] = text.format(str(arr), arr[startindex:endindex])
     question['correct'].append("arr[{}:{}]".format(startindex,endindex))
     question['incorrect'].append("arr[{},{}]".format(startindex,endindex))
@@ -228,7 +228,7 @@ def listq13(qid):
     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
     dim1 = random.randint(3,5)
     dim2 = random.randint(3,4)
-    print(qid,":")
+    #print(qid,":")
     arr=[]
     for p in range(dim1):
         arr.append( [round(random.random()*random.randint(1,10),2) for __ in range(dim2)])
@@ -257,7 +257,8 @@ def get_random_array(lenfrom=5, lento=10):
 def qtoCSV(q,csvfh):
     line=[q.get('qtype', 'MC'), q.get('prompt', 'No Question')]
     for c in q['correct']:
-        line += [c, 1, '']
+        line += [c, 1, 'Correct']
     for i in q['incorrect']:
-        line += [i, 0, '']
+        line += [i, 0, 'Wrong']
     csvfh.writerow(line)
+    

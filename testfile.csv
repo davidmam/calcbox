@@ -1,0 +1,5 @@
+MC,"Given the array arr = [0.88, 1.69, 1.1, 3.66, 4.71, 5.33, 5.26, 7.9, 7.16], give the code which will retrieve the element with value 1.1",arr[2],1,,"arr(2)
+",0,,"arr{3}
+",0,,"arr(3)
+",0,,"arr[3]
+",0,
