@@ -6,6 +6,14 @@ Created on Tue Jan 15 08:35:13 2019
 """
 
 import random,csv
+import xml.dom.minidom as xmldom
+
+QML_HEADER = """<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE QML SYSTEM "QML_V3.dtd">
+<QML>
+"""
+
+METHODLIST = [arrayq1, arrayq2,arrayq3,arrayq4,arrayq5,arrayq6,varq7,varq8,varq9,dictq10,dictq11,listq12,listq13, arrayq14]
 
 KEYWORDS = """False       class        finally     is               return
 None       continue   for          lambda      try
@@ -20,7 +28,7 @@ NOTKEYWORDS = "finish length elseif delete remove last module array dictionary w
 RANDOMWORDS = [x.strip() for x in open('words_alpha.txt','r').readlines()]
 
 def arrayq1(qid):
-    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'listq 1 {}'.format(qid) }
     arr = get_random_array()
     index = random.randint(0,len(arr)-1) 
     text = """Given the list arr = {}, give the code which will retrieve the element with value {}"""
@@ -33,7 +41,7 @@ def arrayq1(qid):
     return question
 
 def arrayq2(qid):
-    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'listq 2 {}'.format(qid)}
     arr = get_random_array()
     index = random.randint(1,len(arr)-2) 
     text = """Given the list arr = {}, give the value which will be returned with the code {}"""
@@ -45,7 +53,7 @@ def arrayq2(qid):
     return question
 
 def arrayq3(qid):    
-    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'listq 3 {}'.format(qid)}
     arr = get_random_array()
     index = random.randint(1,len(arr)-2) 
     incorrect = ("arr({})", "arr{{{}}}")
@@ -59,7 +67,7 @@ def arrayq3(qid):
     return question
     
 def arrayq4(qid):
-    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'listq 4 {}'.format(qid)}
     arr = get_random_array(6,11)
     startindex = random.randint(1,int(len(arr)/3))
     endindex = random.randint(startindex+1, len(arr)-2)
@@ -72,7 +80,7 @@ def arrayq4(qid):
     return question
 
 def arrayq5(qid):
-    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'listq 5 {}'.format(qid)}
     arr = get_random_array()
     startindex = random.randint(1,int(len(arr)/3))
     endindex = random.randint(startindex+1, len(arr)-2)
@@ -85,7 +93,7 @@ def arrayq5(qid):
     return question
 
 def arrayq6(qid):
-    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'listq 6 {}'.format(qid)}
     arr = get_random_array()
     startindex = random.randint(1,int(len(arr)/3))
     endindex = random.randint(startindex+1, len(arr)-2)
@@ -95,20 +103,31 @@ def arrayq6(qid):
     question['incorrect'].append("arr[{},{}]".format(startindex,endindex))
     question['incorrect'].append("arr[{}-{}]".format(startindex,endindex))
     question['incorrect'].append("arr({}:{})".format(startindex,endindex))
-    question['incorrect'].append("An error occurs")
+    return question
+def arrayq14(qid):
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'arrayq 14 {}'.format(qid)}
+    arr = get_random_array()
+    startindex = random.randint(1,int(len(arr)/3))
+    endindex = random.randint(startindex+1, len(arr)-2)
+    text = """Given the list arr = {}, give the code which will return the values {}"""
+    question['prompt'] = text.format(str(arr), arr[startindex:endindex])
+    question['correct'].append("arr[{}:{}]".format(startindex,endindex))
+    question['incorrect'].append("arr[{}:{}]".format(startindex+1,endindex))
+    question['incorrect'].append("arr[{}:{}]".format(startindex,endindex-1))
+    question['incorrect'].append("arr[{}:{}]".format(startindex+1,endindex+1))
     return question
 
 def varq7(qid):
-    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'varq 7 {}'.format(qid)}
     var = random.random()*random.randint(1,10)
     options=(str, int, float)
     var = random.choice(options)(round(var,0))
     if type(var).__name__ == 'str':
         var = "'{}'".format(var)
-    text = """<![CDATA[If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
+    text = """If the variable <tt>code</tt> gives the following result when queried, what is the type of the variable?
     <code>&gt; var
     {}
-    </code>]]>"""
+    </code>"""
     question['prompt'] = text.format(var)
     question['correct'].append(type(var).__name__)
     opts = ['str','int','float']
@@ -119,7 +138,7 @@ def varq7(qid):
     return question
 
 def varq8(qid):
-    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'varq 8 {}'.format(qid)}
     
     var1 = random.random()*random.randint(1,10)
     var2 = random.random()*random.randint(1,10)
@@ -135,11 +154,11 @@ def varq8(qid):
         var1 = "'{}'".format(var1)
     if type(var2).__name__ == 'str':
         var2 = "'{}'".format(var2)
-    text = """<![CDATA[What is the type of the variable <tt>c</tt> after the following code has been excecuted?
+    text = """What is the type of the variable <tt>c</tt> after the following code has been excecuted?
     <code>&gt; a = {}
     &gt; b = {}
     &gt; c = a + b
-    </code>]]>"""
+    </code>"""
     question['prompt'] = text.format(var1,var2)
     question['correct'].append(correct)
     opts = ['str','int','float']
@@ -151,7 +170,7 @@ def varq8(qid):
     return question
 
 def varq9(qid):
-    question = {'qtype': 'MR', 'correct': [], 'incorrect': [], 'prompt': ''}
+    question = {'qtype': 'MR', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'varq 9 {}'.format(qid)}
     question['prompt'] ="Which of the following are legitimate variable names? Select all that apply."
     question['incorrect'].append(random.choice(KEYWORDS))
     question['correct'].append(random.choice(NOTKEYWORDS))
@@ -169,7 +188,7 @@ def varq9(qid):
     return question
 
 def dictq10(qid):
-    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'dictq 10 {}'.format(qid)}
     count = random.randint(3,7)
     words = random.choices(RANDOMWORDS, k=count)
     numbers = []
@@ -178,7 +197,7 @@ def dictq10(qid):
     d = dict(zip(words,numbers))
     keypairs = ", ".join(["'{}' &rarr; {}".format(k,v) for k,v in d.items()])
 
-    question['prompt'] = "<![CDATA[Which of the following is the correct way to define the dictionary <tt>d</tt> for the key &rarr; value pairs {kv} ?.]]>".format( kv=keypairs)
+    question['prompt'] = "Which of the following is the correct way to define the dictionary <tt>d</tt> for the key &rarr; value pairs {kv} ?.".format( kv=keypairs)
     question['correct'].append("d = {}".format(str(d)))
     question['incorrect'].append("d = {}".format(list(d.items())))
     question['incorrect'].append("d = {{{}}}".format(", ".join(["{} : {}".format(k,v) for k,v in d.items()])))
@@ -186,7 +205,7 @@ def dictq10(qid):
     return question
 
 def dictq11(qid):
-    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'dictq 11 {}'.format(qid)}
     count = random.randint(3,7)
     words = random.choices(RANDOMWORDS, k=count)
     numbers = []
@@ -195,7 +214,7 @@ def dictq11(qid):
         numbers.append(random.randint(1,100))
     d = dict(zip(words,numbers))
     keypairs = ", ".join(["'{}' &rarr; {}".format(k,v) for k,v in d.items()])
-    question['prompt'] = '<![CDATA[Which of the following is the correct way to retrieve the value indexed by <tt>{key}</tt> from the dictionary <tt>d</tt> containing the following key &rarr; value pairs: {kv}?  ]]>'.format( key=randkey, kv=keypairs)
+    question['prompt'] = 'Which of the following is the correct way to retrieve the value indexed by <tt>{key}</tt> from the dictionary <tt>d</tt> containing the following key &rarr; value pairs: {kv}? '.format( key=randkey, kv=keypairs)
     question['correct'].append("d['{}']".format(randkey))
     question['incorrect'].append("d[{}]".format(randkey))
     question['incorrect'].append("d{{{}}}".format(randkey))
@@ -205,7 +224,7 @@ def dictq11(qid):
     return question
 
 def listq12(qid):
-    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'listq 12 {}'.format(qid)}
     dim1 = random.randint(3,5)
     dim2 = random.randint(2,4)
     arr=[]
@@ -215,7 +234,7 @@ def listq12(qid):
     qdim2 = qdim1
     while qdim2 == qdim1:
         qdim2 =random.randint(0,dim2-1)
-    question['prompt'] = '<![CDATA[Which of the following is the correct way to retrieve the value {val} from the list <tt>l</tt> {lv}?  ]]>'.format( val=arr[qdim1][qdim2], lv=str(arr))
+    question['prompt'] = 'Which of the following is the correct way to retrieve the value {val} from the list <tt>l</tt> {lv}? '.format( val=arr[qdim1][qdim2], lv=str(arr))
     question['correct'].append("l[{d1}][{d2}]".format(d1=qdim1, d2=qdim2))
     question['incorrect'].append("l[{d1},{d2}]".format(d1=qdim1, d2=qdim2))
     question['incorrect'].append("l[{d1}:{d2}]".format(d1=qdim1, d2=qdim2))
@@ -225,7 +244,7 @@ def listq12(qid):
     return question
     
 def listq13(qid):
-    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': ''}
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '', 'description':'listq 13 {}'.format(qid)}
     dim1 = random.randint(3,5)
     dim2 = random.randint(3,4)
     #print(qid,":")
@@ -236,7 +255,7 @@ def listq13(qid):
     qdim2 = qdim1
     while qdim2 == qdim1:
         qdim2 =random.randint(0,min(dim1,dim2)-2)
-    question['prompt'] = '<![CDATA[Which of the following is the value returned by <tt>{val}</tt> from the list <code>l =  {lv}</code>?  ]]>'.format( val=arr[qdim1][qdim2], lv=str(arr))
+    question['prompt'] = 'Which of the following is the value returned by <tt>{val}</tt> from the list <code>l =  {lv}</code>?'.format( val=arr[qdim1][qdim2], lv=str(arr))
     question['correct'].append("{}".format(arr[qdim1][qdim2]))
     question['incorrect'].append("{}".format(arr[qdim1+1][qdim2+1]))
     question['incorrect'].append("{}".format(arr[qdim2][qdim1]))
@@ -261,4 +280,79 @@ def qtoCSV(q,csvfh):
     for i in q['incorrect']:
         line += [i, 0, 'Wrong']
     csvfh.writerow(line)
-    
+
+def qtoQML(q, qid,qname):
+    newqdoc = xmldom.getDOMImplementation().createDocument(None,'QUESTION',None)
+    newq = newqdoc.documentElement
+    newq.setAttribute('ID', "{:016d}".format(qid))
+    newq.setAttribute('DESCRIPTION', q.get('description', 'question'))
+    newq.setAttribute('TOPIC', "CLS BS21010\{}".format(qname)) 
+    newq.setAttribute('STATUS', "Normal")
+    content = newqdoc.createElement('CONTENT')
+    content.setAttribute('TYPE', 'text/html')
+    newq.appendChild(content)
+    content.appendChild(newqdoc.createCDATASection(q['prompt']))
+    answers= newqdoc.createElement('ANSWER')
+    answers.setAttribute('QTYPE', q['qtype'])
+    answers.setAttribute('SHUFFLE', 'YES')
+    answers.setAttribute('SUBTYPE', 'VERT')
+    newq.appendChild(answers)
+    acount = 0
+    for c in q['correct']:
+        opt = newqdoc.createElement('CHOICE')
+        opt.setAttribute('ID','{}'.format(acount))
+        cont = newqdoc.createElement('CONTENT')
+        opt.appendChild(cont)
+        cont.setAttribute('TYPE', 'text/html')
+        text = newqdoc.createCDATASection(str(c))
+        cont.appendChild(text)
+        answers.appendChild(opt)
+        outcome = newqdoc.createElement('OUTCOME')
+        outcome.setAttribute('ID','{}'.format(acount))
+        outcome.setAttribute('SCORE', "1")
+        condition = newqdoc.createElement('CONDITION')
+        ctext=newqdoc.createTextNode('{}'.format(acount))
+        condition.appendChild(ctext)
+        outcome.appendChild(condition)
+        ccont = newqdoc.createElement('CONTENT')
+        cctext = newqdoc.createCDATASection('Correct')
+        ccont.appendChild(cctext)
+        ccont.setAttribute('TYPE', 'text/html')
+        outcome.appendChild(ccont)
+        newq.appendChild(outcome)
+        acount += 1
+    for c in q['incorrect']:
+        opt = newqdoc.createElement('CHOICE')
+        opt.setAttribute('ID','{}'.format(acount))
+        cont = newqdoc.createElement('CONTENT')
+        opt.appendChild(cont)
+        cont.setAttribute('TYPE', 'text/html')
+        text = newqdoc.createCDATASection(str(c))
+        cont.appendChild(text)
+        answers.appendChild(opt)
+        outcome = newqdoc.createElement('OUTCOME')
+        outcome.setAttribute('ID','{}'.format(acount))
+        outcome.setAttribute('SCORE', "0")
+        condition = newqdoc.createElement('CONDITION')
+        ctext=newqdoc.createTextNode('{}'.format(acount))
+        condition.appendChild(ctext)
+        outcome.appendChild(condition)
+        ccont = newqdoc.createElement('CONTENT')
+        cctext = newqdoc.createCDATASection('Wrong')
+        ccont.appendChild(cctext)
+        ccont.setAttribute('TYPE', 'text/html')
+        outcome.appendChild(ccont)
+        newq.appendChild(outcome)
+        acount += 1
+    return newq
+
+def getq(methodlist, count):
+    for f in methodlist:
+        text = ''
+        fh=open(f.__name__+".qml", 'w')
+        print(QML_HEADER, file=fh)
+        for p in range(40):
+            text +=qtoQML(f(p),99999999+ p*40+p,f.__name__).toxml()
+        print(text.replace("<CONDITION>", '<CONDITION>"').replace("</CONDITION>", '"</CONDITION>'), file=fh)  
+        print('</QML>', file=fh)
+        fh.close()
