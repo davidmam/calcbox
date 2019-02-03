@@ -263,9 +263,147 @@ def listq13(qid):
     question['incorrect'].append("An error occurs")
     return question
     
+def rangeq14(qid):
+     '''questions based on range(x)'''
+     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '',
+      'description':'rangeq 14 {}'.format(qid)}
+     i = random.randint(4,8)
+     r = list(range(i))
+     pos = random.randint(0, len(r))
+     descriptors = ['first','second', 'third', 'fourth','fifth', 'sixth','seventh', 'eighth', 'ninth']
+     question['prompt'] = 'Which of the following is the {descr} value returned by the function <tt>range({maxval})</tt>?'.format(descr=descriptors[pos],maxval=i)
+     if pos == len(r):
+         question['correct'].append('No such value returned')
+     else:
+         question['incorrect'].append('No such value returned')
+         question['correct'].append(r[pos])
+     for i in random.sample([x for x in r if x != pos],3):
+         question['incorrect'].append(r[pos])
+     return question
+ 
+def rangeq15(qid):
+     '''questions based on range(x,y)'''
+     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '',
+      'description':'rangeq 15 {}'.format(qid)}
+     i = random.randint(4,8)
+     j = random.randint(4,8)
+     r = list(range(i,i+j))
+     pos = random.randint(0, len(r))
+     descriptors = ['first','second', 'third', 'fourth','fifth', 'sixth','seventh', 'eighth', 'ninth']
+     question['prompt'] = 'Which of the following is the {descr} value returned by the function <tt>range({minval},{maxval})</tt>?'.format(descr=descriptors[pos],minval=i,maxval=i+j)
+     if pos == len(r):
+         question['correct'].append('No such value returned')
+     else:
+         question['incorrect'].append('No such value returned')
+         question['correct'].append(r[pos])
+     question['incorrect'].append('An error occurs')
+     for i in random.sample([x for x in r if x != pos],3):
+         question['incorrect'].append(r[pos])
+     return question
+ 
+def rangeq16(qid):
+     '''questions based on range(x,y)'''
+     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '',
+      'description':'rangeq 16 {}'.format(qid)}
+     i = random.randint(4,8)
+     j = random.randint(4,8)
+     r = list(range(i,i+j))
+     pos = random.randint(0, len(r))
+     descriptors = ['first','second', 'third', 'fourth','fifth', 'sixth','seventh', 'eighth', 'ninth']
+     question['prompt'] = 'Which of the following is the {descr} value returned by the function <tt>range({minval}:{maxval})</tt>?'.format(descr=descriptors[pos],minval=i,maxval=i+j)
+     question['correct'].append('An error occurs')
+     question['incorrect'].append('No such value returned')
+         
+     for i in random.sample(r,3):
+         question['incorrect'].append(r[pos])
+     return question
 
+def rangeq17(qid):
+     '''questions based on range(x,y,z)'''
+     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '',
+      'description':'rangeq 17 {}'.format(qid)}
+     i = random.randint(4,8)
+     j = random.randint(4,8)
+     z = random.randint(1,3)
+     r = list(range(i,i+z*j,z))
+     pos = random.randint(0, len(r))
+     descriptors = ['first','second', 'third', 'fourth','fifth', 'sixth','seventh', 'eighth', 'ninth']
+     question['prompt'] = 'Which of the following is the {descr} value returned by the function <tt>range({minval},{maxval},{stepval})</tt>?'.format(descr=descriptors[pos],minval=i,maxval=i+z*j, stepval=z)
+     if pos == len(r):
+         question['correct'].append('No such value returned')
+     else:
+         question['incorrect'].append('No such value returned')
+         question['correct'].append(r[pos])
+     question['incorrect'].append('An error occurs')
+     for i in random.sample([x for x in r if x != pos],3):
+         question['incorrect'].append(r[pos])
+     return question
 
-        
+def formatq18(qid):
+    '''questions based on string.format()'''
+    formats = ["{:04d}","{: 04d}","{: 4d}","{: 4d}","{:d}","{: d}","{:03d}"]
+    choice = random.randint(0,len(formats)-1)
+    randomdata = int(10**(random.random()*4))
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '',
+      'description':'formatq 18 {}'.format(qid)}
+    question['prompt'] = "Which of the following options should replace 'string' in <tt>'!string!'.format({val})</tt> to give the output <tt>!{output}!</tt>?".format(val=randomdata, output=formats[choice].format(randomdata))
+    question['correct'].append(formats[choice])
+    for f in random.sample([x for x in range(len(formats)) if x != choice],4):
+        question['incorrect'].append(formats[f])
+    return question
+    
+def formatq19(qid):
+    '''questions based on string.format()'''
+    formats = ["{:04d}","{: 04d}","{: 4d}","{: 4d}","{:d}","{: d}","{:03d}"]
+    choice = random.randint(0,len(formats)-1)
+    randomdata = int(10**(random.random()*4))
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '',
+      'description':'formatq 19 {}'.format(qid)}
+    question['prompt'] = "Which of the following outputs should result from the command <tt>'!{code}!'.format({val})</tt>?".format(val=randomdata, output=formats[choice].format(randomdata))
+    question['correct'].append(formats[choice].format(randomdata))
+    for f in random.sample([x for x in range(len(formats)) if x.format(randomdata) != formats[choice].format(randomdata)],4):
+        question['incorrect'].append(formats[f].format(randomdata))
+    return question
+         
+def formatq20(qid):
+    '''questions based on string.format()'''
+    formats = ["{:04d}","{: 04d}","{: 4d}","{: 4d}","{:d}","{: d}","{:03d}"]
+    choice = random.randint(0,len(formats)-1)
+    randomdata = round(10**(random.random()*4),2)
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '',
+      'description':'formatq 20 {}'.format(qid)}
+    question['prompt'] = "Which of the following outputs should result from the command <tt>'!{code}!'.format({val})</tt>?".format(val=randomdata, output=formats[choice].format(randomdata))
+    question['correct'].append('An error occurs')
+    for f in random.sample([x for x in range(len(formats))],4):
+        question['incorrect'].append(formats[f].format(int(randomdata)))
+    return question
+
+def formatq21(qid):
+    '''questions based on string.format()'''
+    formats = ["{:04f}","{: 04f}","{:. 4f}","{: .4f}","{:02.4f}","{: 2.3f}","{:03.3f}"]
+    choice = random.randint(0,len(formats)-1)
+    randomdata = 10**(random.random()*4)
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '',
+      'description':'formatq 19 {}'.format(qid)}
+    question['prompt'] = "Which of the following outputs should result from the command <tt>'!{code}!'.format({val})</tt>?".format(val=randomdata, output=formats[choice].format(randomdata))
+    question['correct'].append(formats[choice].format(randomdata))
+    for f in random.sample([x for x in range(len(formats)) if x.format(randomdata) != formats[choice].format(randomdata)],4):
+        question['incorrect'].append(formats[f].format(randomdata))
+    return question
+
+def formatq22(qid):
+    '''questions based on string.format()'''
+    formats = ["{:04f}","{: 04f}","{:. 4f}","{: .4f}","{:02.4f}","{: 2.3f}","{:03.3f}"]
+    choice = random.randint(0,len(formats)-1)
+    randomdata = 10**(random.random()*4)
+    question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '',
+      'description':'formatq 18 {}'.format(qid)}
+    question['prompt'] = "Which of the following options should replace 'string' in <tt>'!string!'.format({val})</tt> to give the output <tt>!{output}!</tt>?".format(val=randomdata, output=formats[choice].format(randomdata))
+    question['correct'].append(formats[choice])
+    for f in random.sample([x for x in range(len(formats)) if x != choice],4):
+        question['incorrect'].append(formats[f])
+    return question
+         
 def get_random_array(lenfrom=5, lento=10):   
     arr = []
     for p in range(random.randint(lenfrom, lento)):
