@@ -5,3 +5,5 @@ qrcodes
 *.stackdump
 *.pdf
 *.png
+*.qml
+*.csv
