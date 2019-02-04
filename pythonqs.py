@@ -13,8 +13,6 @@ QML_HEADER = """<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <QML>
 """
 
-METHODLIST = [arrayq1, arrayq2,arrayq3,arrayq4,arrayq5,arrayq6,varq7,varq8,varq9,dictq10,dictq11,listq12,listq13, arrayq14]
-
 KEYWORDS = """False       class        finally     is               return
 None       continue   for          lambda      try
 True        def            from       nonlocal    while
@@ -277,8 +275,11 @@ def rangeq14(qid):
      else:
          question['incorrect'].append('No such value returned')
          question['correct'].append(r[pos])
-     for i in random.sample([x for x in r if x != pos],3):
-         question['incorrect'].append(r[pos])
+     for i in random.sample([x for x in r if x != pos ],3):
+         try:
+             question['incorrect'].append(i)
+         except:
+             print(pos, r, len(r))
      return question
  
 def rangeq15(qid):
@@ -297,8 +298,8 @@ def rangeq15(qid):
          question['incorrect'].append('No such value returned')
          question['correct'].append(r[pos])
      question['incorrect'].append('An error occurs')
-     for i in random.sample([x for x in r if x != pos],3):
-         question['incorrect'].append(r[pos])
+     for i in random.sample([x for x in r if pos == len(r) or x != r[pos]],3):
+         question['incorrect'].append(i)
      return question
  
 def rangeq16(qid):
@@ -315,7 +316,7 @@ def rangeq16(qid):
      question['incorrect'].append('No such value returned')
          
      for i in random.sample(r,3):
-         question['incorrect'].append(r[pos])
+         question['incorrect'].append(i)
      return question
 
 def rangeq17(qid):
@@ -336,7 +337,7 @@ def rangeq17(qid):
          question['correct'].append(r[pos])
      question['incorrect'].append('An error occurs')
      for i in random.sample([x for x in r if x != pos],3):
-         question['incorrect'].append(r[pos])
+         question['incorrect'].append(i)
      return question
 
 def formatq18(qid):
@@ -359,10 +360,10 @@ def formatq19(qid):
     randomdata = int(10**(random.random()*4))
     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '',
       'description':'formatq 19 {}'.format(qid)}
-    question['prompt'] = "Which of the following outputs should result from the command <tt>'!{code}!'.format({val})</tt>?".format(val=randomdata, output=formats[choice].format(randomdata))
-    question['correct'].append(formats[choice].format(randomdata))
-    for f in random.sample([x for x in range(len(formats)) if x.format(randomdata) != formats[choice].format(randomdata)],4):
-        question['incorrect'].append(formats[f].format(randomdata))
+    question['prompt'] = "Which of the following outputs should result from the command <tt>'!{code}!'.format({val})</tt>?".format(code=formats[choice], val=randomdata,output=formats[choice].format(randomdata))
+    question['correct'].append('!{}!'.format(formats[choice].format(randomdata)))
+    for f in random.sample([x for x in range(len(formats)) if formats[x].format(randomdata) != formats[choice].format(randomdata)],3):
+        question['incorrect'].append('!{}!'.format(formats[f].format(randomdata)))
     return question
          
 def formatq20(qid):
@@ -372,35 +373,41 @@ def formatq20(qid):
     randomdata = round(10**(random.random()*4),2)
     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '',
       'description':'formatq 20 {}'.format(qid)}
-    question['prompt'] = "Which of the following outputs should result from the command <tt>'!{code}!'.format({val})</tt>?".format(val=randomdata, output=formats[choice].format(randomdata))
+    question['prompt'] = "Which of the following outputs should result from the command <tt>'!{code}!'.format({val})</tt>?".format(code=formats[choice],val=randomdata)
     question['correct'].append('An error occurs')
-    for f in random.sample([x for x in range(len(formats))],4):
-        question['incorrect'].append(formats[f].format(int(randomdata)))
+    for f in random.sample([x for x in range(len(formats))],3):
+        question['incorrect'].append('!{}!'.format(formats[f].format(int(randomdata))))
     return question
 
 def formatq21(qid):
     '''questions based on string.format()'''
-    formats = ["{:04f}","{: 04f}","{:. 4f}","{: .4f}","{:02.4f}","{: 2.3f}","{:03.3f}"]
+    formats = ["{:. 4f}","{:04f}","{: 04f}","{: .4f}","{:02.4f}","{: 2.3f}","{:03.3f}"]
     choice = random.randint(0,len(formats)-1)
     randomdata = 10**(random.random()*4)
     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '',
-      'description':'formatq 19 {}'.format(qid)}
-    question['prompt'] = "Which of the following outputs should result from the command <tt>'!{code}!'.format({val})</tt>?".format(val=randomdata, output=formats[choice].format(randomdata))
-    question['correct'].append(formats[choice].format(randomdata))
-    for f in random.sample([x for x in range(len(formats)) if x.format(randomdata) != formats[choice].format(randomdata)],4):
-        question['incorrect'].append(formats[f].format(randomdata))
+      'description':'formatq 21 {}'.format(qid)}
+    question['prompt'] = "Which of the following outputs should result from the command <tt>'!{code}!'.format({val})</tt>?".format(code=formats[choice], val=randomdata)
+    try:
+        question['correct'].append('!{}!'.format(formats[choice].format(randomdata)))
+        question['incorrect'].append('An error occurs')
+    except:
+        question['correct'].append('An error occurs')
+    for f in random.sample(formats[1:],3):
+        question['incorrect'].append('!{}!'.format(f.format(randomdata)))
+    
+    
     return question
 
 def formatq22(qid):
     '''questions based on string.format()'''
-    formats = ["{:04f}","{: 04f}","{:. 4f}","{: .4f}","{:02.4f}","{: 2.3f}","{:03.3f}"]
-    choice = random.randint(0,len(formats)-1)
+    formats = ["{:. 4f}","{:04f}","{: 04f}","{: .4f}","{:02.4f}","{: 2.3f}","{:03.3f}"]
+    choice = random.randint(1,len(formats)-1)
     randomdata = 10**(random.random()*4)
     question = {'qtype': 'MC', 'correct': [], 'incorrect': [], 'prompt': '',
-      'description':'formatq 18 {}'.format(qid)}
+      'description':'formatq 22 {}'.format(qid)}
     question['prompt'] = "Which of the following options should replace 'string' in <tt>'!string!'.format({val})</tt> to give the output <tt>!{output}!</tt>?".format(val=randomdata, output=formats[choice].format(randomdata))
     question['correct'].append(formats[choice])
-    for f in random.sample([x for x in range(len(formats)) if x != choice],4):
+    for f in random.sample([x for x in range(len(formats)) if x != choice],3):
         question['incorrect'].append(formats[f])
     return question
          
@@ -494,3 +501,6 @@ def getq(methodlist, count):
         print(text.replace("<CONDITION>", '<CONDITION>"').replace("</CONDITION>", '"</CONDITION>'), file=fh)  
         print('</QML>', file=fh)
         fh.close()
+        
+
+METHODLIST = [arrayq1, arrayq2,arrayq3,arrayq4,arrayq5,arrayq6,varq7,varq8,varq9,dictq10,dictq11,listq12,listq13, arrayq14, rangeq14, rangeq15, rangeq16, rangeq17, formatq18, formatq19, formatq20, formatq21, formatq22]
