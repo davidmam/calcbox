@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE QML SYSTEM "QML_V3.dtd">
+<QML>
+  <QUESTION ID="0000000006515815" DESCRIPTION="What is the sixth number printed when the code above is run?" TOPIC="CLS BS21010\loops" STATUS="Normal">
+    <CONTENT TYPE="text/html"><![CDATA[Note the following code:<p><tt>a = 0 <br>b = 1<br> c = a + b<br> print(a)<br> print(b) <br>while c &lt; 20:  <br>&nbsp;&nbsp;&nbsp;&nbsp;    print (c)<br>   &nbsp;&nbsp;&nbsp;&nbsp;  a = b<br>  &nbsp;&nbsp;&nbsp;&nbsp;   b = c<br>  &nbsp;&nbsp;&nbsp;&nbsp;   c = b + a <br></tt></p>]]></CONTENT>
+    <ANSWER QTYPE="NUM">
+      <CONTENT TYPE="text/html"><![CDATA[What is the sixth number printed when the code is run?]]></CONTENT>
+      <CHOICE ID="0">
+        <CONTENT TYPE="NULL"><![CDATA[]]></CONTENT>
+      </CHOICE>
+    </ANSWER>
+    <OUTCOME ID="0" ADD="1" CONTINUE="TRUE">
+      <CONDITION>"0" = 5</CONDITION>
+      <CONTENT TYPE="text/html"><![CDATA[]]></CONTENT>
+    </OUTCOME>
+    <OUTCOME ID="Always happens" ADD="0">
+      <CONDITION>TRUE</CONDITION>
+      <CONTENT TYPE="text/html"><![CDATA[]]></CONTENT>
+    </OUTCOME>
+  </QUESTION>
+  <QUESTION ID="0000000006515816" DESCRIPTION="Given the text string mytext = some text or other, the value of mytext[2:5] is  me" TOPIC="CLS BS21010\loops" STATUS="Normal">
+    <ANSWER QTYPE="FIB">
+      <CONTENT TYPE="text/html" WIDTH="82"><![CDATA[Given the text string mytext = "some text or other", the value of mytext[2:5] is ']]></CONTENT>
+      <CHOICE ID="0">
+        <CONTENT TYPE="NULL" WIDTH="7"><![CDATA[]]></CONTENT>
+      </CHOICE>
+      <CONTENT TYPE="text/html" WIDTH="30"><![CDATA[' (use _ to represent a space)]]></CONTENT>
+    </ANSWER>
+    <OUTCOME ID="right" SCORE="1">
+      <CONDITION>"0" MATCHES "me_"</CONDITION>
+      <CONTENT TYPE="text/html"><![CDATA[]]></CONTENT>
+    </OUTCOME>
+    <OUTCOME ID="wrong" SCORE="0">
+      <CONDITION>OTHER</CONDITION>
+      <CONTENT TYPE="text/html"><![CDATA[Given the text string mytext = "some text or other", the value of mytext[2:5] is 'me_' (use _ to represent a space)]]></CONTENT>
+    </OUTCOME>
+  </QUESTION>
+</QML>

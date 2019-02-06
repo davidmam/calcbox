@@ -410,7 +410,79 @@ def formatq22(qid):
     for f in random.sample([x for x in range(len(formats)) if x != choice],3):
         question['incorrect'].append(formats[f])
     return question
-         
+
+def textq23(qid):
+    '''text indexing question'''
+    question = {'qtype': 'FIB', 'correct': [], 'prompt': '','promptparts':[], 'choicewidth':20,
+      'description':'textq 23 {}'.format(qid)}
+    text = ' '.join(random.sample(RANDOMWORDS, random.randint(2,5)))
+    intervalstart = random.randint(0,len(text)-10)
+    intervalend = random.randint(intervalstart+1, min(len(text), intervalstart+10))    
+    question['correct'].append(text[intervalstart:intervalend].replace(" ","_"))
+    question['promptparts'].append('Given the string <tt>mytext = "{}"</tt> what is the value of <tt>mytext[{}:{}]</tt>?'.format(text, intervalstart, intervalend))  
+    question['promptparts'].append('<p>(Use _ to represent a space)')
+    return question
+
+def textq24(qid):
+    '''text indexing question'''
+    question = {'qtype': 'NUM', 'correct': [], 'prompt': '','promptparts':[], 'choicewidth':20,
+      'description':'textq 24 {}'.format(qid)}
+    text = ' '.join(random.sample(RANDOMWORDS, random.randint(2,5)))
+    findchar = random.choice(list(set(list(text))))    
+    question['prompt'] = 'Given the string <tt>mytext = "{}"</tt>'.format(text)
+    question['correct'].append(str(text.find(findchar)))
+    question['promptparts'].append('What is the value of <tt>mytext.find("{}")</tt>?'.format( findchar))  
+    return question
+
+def textq25(qid):
+    '''text indexing question'''
+    question = {'qtype': 'NUM', 'correct': [], 'prompt': '','promptparts':[], 'choicewidth':20,
+      'description':'textq 25 {}'.format(qid)}
+    text = ' '.join(random.sample(RANDOMWORDS, random.randint(2,5)))
+    findchar = random.choice(list(set(list(text))))
+    after = random.randint(10, len(text))
+    question['prompt'] = 'Given the string <tt>mytext = "{}"</tt>'.format(text)
+    question['correct'].append(str(text.find(findchar, after)))
+    question['promptparts'].append('What is the value of <tt>mytext.find("{}",{})</tt>?'.format( findchar,after))  
+    return question
+
+def textq26(qid):
+    '''text splitting question'''
+    question = {'qtype': 'FIB', 'correct': [], 'prompt': '','promptparts':[], 'choicewidth':20,
+      'description':'textq 26 {}'.format(qid)}
+    words = random.sample(RANDOMWORDS, random.randint(2,5))
+    text = ' '.join(words)
+    word = random.choice(words)    
+    question['correct'].append(word)
+    question['promptparts'].append('Given the string <tt>mytext = "{}"</tt> what is the value of <tt>mytext.split()[{}]</tt>?'.format(text, words.index(word)))  
+    question['promptparts'].append('<p>(Use _ to represent a space)')
+    return question
+
+def textq27(qid):
+    '''text splitting question'''
+    question = {'qtype': 'FIB', 'correct': [], 'prompt': '','promptparts':[], 'choicewidth':20,
+      'description':'textq 27 {}'.format(qid)}
+    words = random.sample(RANDOMWORDS, random.randint(2,5))
+    text = ' '.join(words)
+    word = random.choice(words)
+    windex =  random.randint(0, len(word)-1)
+    question['correct'].append(word[windex])
+    question['promptparts'].append('Given the string <tt>mytext = "{}"</tt> what is the value of <tt>mytext.split()[{}][{}]</tt>?'.format(text, words.index(word),windex))  
+    question['promptparts'].append('<p>(Use _ to represent a space)')
+    return question
+
+def textq28(qid):
+    '''text splitting question'''
+    question = {'qtype': 'FIB', 'correct': [], 'prompt': '','promptparts':[], 'choicewidth':20,
+      'description':'textq 28 {}'.format(qid)}
+    words = random.sample(RANDOMWORDS, random.randint(2,5))
+    text = ', '.join(words)
+    word = random.choice(words[:-1])+','    
+    question['correct'].append(word)
+    question['promptparts'].append('Given the string <tt>mytext = "{}"</tt> what is the value of <tt>mytext.split()[{}]</tt>?'.format(text, words.index(word[:-1])))  
+    question['promptparts'].append('<p>(Use _ to represent a space)')
+    return question
+
 def get_random_array(lenfrom=5, lento=10):   
     arr = []
     for p in range(random.randint(lenfrom, lento)):
@@ -433,62 +505,116 @@ def qtoQML(q, qid,qname):
     newq.setAttribute('DESCRIPTION', q.get('description', 'question'))
     newq.setAttribute('TOPIC', "CLS BS21010\{}".format(qname)) 
     newq.setAttribute('STATUS', "Normal")
-    content = newqdoc.createElement('CONTENT')
-    content.setAttribute('TYPE', 'text/html')
-    newq.appendChild(content)
-    content.appendChild(newqdoc.createCDATASection(q['prompt']))
+    if q['qtype'] not in ('FIB'):
+        content = newqdoc.createElement('CONTENT')
+        content.setAttribute('TYPE', 'text/html')
+        newq.appendChild(content)
+        content.appendChild(newqdoc.createCDATASection(q['prompt']))
     answers= newqdoc.createElement('ANSWER')
     answers.setAttribute('QTYPE', q['qtype'])
     answers.setAttribute('SHUFFLE', 'YES')
     answers.setAttribute('SUBTYPE', 'VERT')
     newq.appendChild(answers)
-    acount = 0
-    for c in q['correct']:
-        opt = newqdoc.createElement('CHOICE')
-        opt.setAttribute('ID','{}'.format(acount))
-        cont = newqdoc.createElement('CONTENT')
-        opt.appendChild(cont)
-        cont.setAttribute('TYPE', 'text/html')
-        text = newqdoc.createCDATASection(str(c))
-        cont.appendChild(text)
-        answers.appendChild(opt)
+    if q['qtype'] in ('FIB', 'NUM'): # text based
+        partcount = 0
+        while partcount < max(len(q['correct']),len(q['promptparts'])):
+            if partcount < len(q['promptparts']):
+                content = newqdoc.createElement('CONTENT')
+                content.setAttribute('TYPE', 'text/html')
+                answers.appendChild(content)
+                content.appendChild(newqdoc.createCDATASection(q['promptparts'][partcount]))
+            else:
+                content = newqdoc.createElement('CONTENT')
+                content.setAttribute('TYPE', 'text/html')
+                answers.appendChild(content)
+                content.appendChild(newqdoc.createCDATASection(''))
+            if partcount < len(q['correct']):
+                choice = newqdoc.createElement('CHOICE')
+                choice.setAttribute('ID', str(partcount))
+                answers.appendChild(choice)
+                content = newqdoc.createElement('CONTENT')
+                content.setAttribute('TYPE', 'NULL')
+                content.setAttribute('WIDTH', str(q['choicewidth']))
+                choice.appendChild(content)
+                content.appendChild(newqdoc.createCDATASection(''))
+
+            partcount += 1
+        partcount = 0
+        for ans in q['correct']:
+            outcome = newqdoc.createElement('OUTCOME')
+            outcome.setAttribute('ID', 'right{}'.format(partcount))
+            outcome.setAttribute('SCORE', "1")
+            condition = newqdoc.createElement('CONDITION')
+            if q['qtype']=='FIB':
+                condition.appendChild(newqdoc.createTextNode('"{}" MATCHES CASE "{}"'.format(partcount, q['correct'][partcount])))
+            elif q['qtype']=='NUM':
+                condition.appendChild(newqdoc.createTextNode('"{}" = {}'.format(partcount, q['correct'][partcount])))
+            outcome.appendChild(condition)
+            newq.appendChild(outcome)
+            content = newqdoc.createElement('CONTENT')
+            content.setAttribute('TYPE', 'text/html')
+            outcome.appendChild(content)
+            content.appendChild(newqdoc.createCDATASection('Correct!'))
         outcome = newqdoc.createElement('OUTCOME')
-        outcome.setAttribute('ID','{}'.format(acount))
-        outcome.setAttribute('SCORE', "1")
-        condition = newqdoc.createElement('CONDITION')
-        ctext=newqdoc.createTextNode('{}'.format(acount))
-        condition.appendChild(ctext)
-        outcome.appendChild(condition)
-        ccont = newqdoc.createElement('CONTENT')
-        cctext = newqdoc.createCDATASection('Correct')
-        ccont.appendChild(cctext)
-        ccont.setAttribute('TYPE', 'text/html')
-        outcome.appendChild(ccont)
-        newq.appendChild(outcome)
-        acount += 1
-    for c in q['incorrect']:
-        opt = newqdoc.createElement('CHOICE')
-        opt.setAttribute('ID','{}'.format(acount))
-        cont = newqdoc.createElement('CONTENT')
-        opt.appendChild(cont)
-        cont.setAttribute('TYPE', 'text/html')
-        text = newqdoc.createCDATASection(str(c))
-        cont.appendChild(text)
-        answers.appendChild(opt)
-        outcome = newqdoc.createElement('OUTCOME')
-        outcome.setAttribute('ID','{}'.format(acount))
+        outcome.setAttribute('ID', 'wrong')
         outcome.setAttribute('SCORE', "0")
         condition = newqdoc.createElement('CONDITION')
-        ctext=newqdoc.createTextNode('{}'.format(acount))
-        condition.appendChild(ctext)
+        condition.appendChild(newqdoc.createTextNode('OTHER'))
         outcome.appendChild(condition)
-        ccont = newqdoc.createElement('CONTENT')
-        cctext = newqdoc.createCDATASection('Wrong')
-        ccont.appendChild(cctext)
-        ccont.setAttribute('TYPE', 'text/html')
-        outcome.appendChild(ccont)
         newq.appendChild(outcome)
-        acount += 1
+        content = newqdoc.createElement('CONTENT')
+        content.setAttribute('TYPE', 'text/html')
+        outcome.appendChild(content)
+        content.appendChild(newqdoc.createCDATASection('Incorrect'))
+    
+    else:
+        acount = 0
+        for c in q['correct']:
+            opt = newqdoc.createElement('CHOICE')
+            opt.setAttribute('ID','{}'.format(acount))
+            cont = newqdoc.createElement('CONTENT')
+            opt.appendChild(cont)
+            cont.setAttribute('TYPE', 'text/html')
+            text = newqdoc.createCDATASection(str(c))
+            cont.appendChild(text)
+            answers.appendChild(opt)
+            outcome = newqdoc.createElement('OUTCOME')
+            outcome.setAttribute('ID','{}'.format(acount))
+            outcome.setAttribute('SCORE', "1")
+            condition = newqdoc.createElement('CONDITION')
+            ctext=newqdoc.createTextNode('{}'.format(acount))
+            condition.appendChild(ctext)
+            outcome.appendChild(condition)
+            ccont = newqdoc.createElement('CONTENT')
+            cctext = newqdoc.createCDATASection('Correct')
+            ccont.appendChild(cctext)
+            ccont.setAttribute('TYPE', 'text/html')
+            outcome.appendChild(ccont)
+            newq.appendChild(outcome)
+            acount += 1
+        for c in q['incorrect']:
+            opt = newqdoc.createElement('CHOICE')
+            opt.setAttribute('ID','{}'.format(acount))
+            cont = newqdoc.createElement('CONTENT')
+            opt.appendChild(cont)
+            cont.setAttribute('TYPE', 'text/html')
+            text = newqdoc.createCDATASection(str(c))
+            cont.appendChild(text)
+            answers.appendChild(opt)
+            outcome = newqdoc.createElement('OUTCOME')
+            outcome.setAttribute('ID','{}'.format(acount))
+            outcome.setAttribute('SCORE', "0")
+            condition = newqdoc.createElement('CONDITION')
+            ctext=newqdoc.createTextNode('{}'.format(acount))
+            condition.appendChild(ctext)
+            outcome.appendChild(condition)
+            ccont = newqdoc.createElement('CONTENT')
+            cctext = newqdoc.createCDATASection('Wrong')
+            ccont.appendChild(cctext)
+            ccont.setAttribute('TYPE', 'text/html')
+            outcome.appendChild(ccont)
+            newq.appendChild(outcome)
+            acount += 1
     return newq
 
 def getq(methodlist, count):
@@ -496,9 +622,10 @@ def getq(methodlist, count):
         text = ''
         fh=open(f.__name__+".qml", 'w')
         print(QML_HEADER, file=fh)
-        for p in range(40):
+        for p in range(count):
             text +=qtoQML(f(p),99999999+ p*40+p,f.__name__).toxml()
-        print(text.replace("<CONDITION>", '<CONDITION>"').replace("</CONDITION>", '"</CONDITION>'), file=fh)  
+        print(text.replace('&quot;','"'), file=fh)
+        #print(text.replace("<CONDITION>", '<CONDITION>"').replace("</CONDITION>", '"</CONDITION>'), file=fh)  
         print('</QML>', file=fh)
         fh.close()
         
