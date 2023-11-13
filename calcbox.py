@@ -14,31 +14,31 @@ import scipy.stats as stats
 rmm={
 'NaCl':58.44,
 'KCl': 74.5513,
-'Na2CO3': 105.9888,
-'NaHCO3': 84.007,
-'Na3PO4': 163.94,
-'Na2HPO4': 141.96,
-'NaH2PO4': 119.98,
-'K3PO4': 212.27,
-'K2HPO4': 174.18,
-'KH2PO4': 136.09,
-'CH3COONa': 82.03,
-'CH3COOH': 60.05,
-'CaCO3': 100.09
+'Na_2CO_3': 105.9888,
+'NaHCO_3': 84.007,
+'Na_3PO_4': 163.94,
+'Na_2HPO_4': 141.96,
+'NaH_2PO_4': 119.98,
+'K_3PO_4': 212.27,
+'K_2HPO_4': 174.18,
+'KH_2PO_4': 136.09,
+'CH_3COONa': 82.03,
+'CH_3COOH': 60.05,
+'CaCO_3': 100.09
 
 }
 AVOGADRO=6.022*10**23
 H2O=18.015
 
-buffers=(('NaH2PO4','Na2HPO4',7.21 ), 
-         ('KH2PO4', 'K2HPO4', 7.21),
-        ('NaHCO3', 'Na2CO3', 9.9),
-        ('CH3COOH', 'CH3COONa', 4.74),
+buffers=(('NaH_2PO_4','Na_2HPO_4',7.21 ), 
+         ('KH_2PO_4', 'K_2HPO_4', 7.21),
+        ('NaHCO_3', 'Na_2CO_3', 9.9),
+        ('CH_3COOH', 'CH_3COONa', 4.74),
 )
 
-hydrates = {'Na2HPO4': [0,2,7,12],
-            'K2HPO4': [0,3],
-            'CH3COONa':[0,3]
+hydrates = {'Na_2HPO_4': [0,2,7,12],
+            'K_2HPO_4': [0,3],
+            'CH_3COONa':[0,3]
 }
   
 uvvisM={'p-Nitrophenol':18200,
